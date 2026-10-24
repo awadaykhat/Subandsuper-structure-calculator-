@@ -1,0 +1,2227 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🏗️ ETBCS G+5 Substructure Complete Calculator</title>
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --primary: #0B5D7C;
+    --primary-light: #1E88A8;
+    --primary-gradient: linear-gradient(135deg, #0B5D7C, #1E88A8);
+    --secondary: #F39C12;
+    --secondary-gradient: linear-gradient(135deg, #F39C12, #E67E22);
+    --accent: #27AE60;
+    --accent-gradient: linear-gradient(135deg, #27AE60, #2ECC71);
+    --danger: #E74C3C;
+    --danger-gradient: linear-gradient(135deg, #E74C3C, #C0392B);
+    --purple: #8E44AD;
+    --purple-gradient: linear-gradient(135deg, #8E44AD, #9B59B6);
+    --teal: #16A085;
+    --teal-gradient: linear-gradient(135deg, #16A085, #1ABC9C);
+    --bg: #EAF2F8;
+    --bg-card: #FFFFFF;
+    --bg-sidebar: #052E3D;
+    --bg-sidebar-hover: rgba(30, 136, 168, 0.15);
+    --text: #172B4D;
+    --text-light: #5E6C84;
+    --text-white: #FFFFFF;
+    --border: #D6E0EA;
+    --shadow: 0 4px 20px rgba(11, 93, 124, 0.08);
+    --shadow-lg: 0 10px 40px rgba(11, 93, 124, 0.15);
+    --shadow-hover: 0 8px 30px rgba(11, 93, 124, 0.20);
+    --radius: 14px;
+    --radius-sm: 8px;
+    --transition: 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    --sidebar-width: 265px;
+    --topbar-height: 62px;
+    --bottombar-height: 58px;
+    --gradient-hero: linear-gradient(135deg, #0B5D7C 0%, #F39C12 50%, #27AE60 100%);
+}
+
+[data-theme="dark"] {
+    --bg: #0F1E28;
+    --bg-card: #1A2F3E;
+    --bg-sidebar: #061823;
+    --text: #E8F0F8;
+    --text-light: #8FA3B8;
+    --border: #2C4356;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.5);
+    --shadow-hover: 0 8px 30px rgba(30, 136, 168, 0.25);
+}
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    min-height: 100vh;
+    transition: all var(--transition);
+    overflow: hidden;
+    height: 100vh;
+}
+
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+button { cursor: pointer; font-family: inherit; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: var(--primary-gradient); border-radius: 4px; }
+
+/* SIDEBAR */
+.sidebar {
+    position: fixed; top: 0; left: 0; height: 100%;
+    width: var(--sidebar-width);
+    background: var(--bg-sidebar);
+    color: var(--text-white);
+    overflow-y: auto; overflow-x: hidden;
+    z-index: 1000;
+    transition: transform var(--transition);
+    display: flex; flex-direction: column;
+    border-right: 2px solid rgba(30, 136, 168, 0.2);
+}
+.sidebar-brand {
+    display: flex; align-items: center; gap: 10px;
+    padding: 15px 18px; font-size: 16px; font-weight: 800;
+    border-bottom: 2px solid rgba(30, 136, 168, 0.2);
+    min-height: 60px;
+    background: linear-gradient(135deg, rgba(30,136,168,0.12), rgba(243,156,18,0.05));
+}
+.sidebar-brand i { font-size: 24px; color: var(--secondary); }
+.sidebar-brand small { font-size: 9px; color: var(--secondary); font-weight: 600; margin-left: auto; text-transform: uppercase; }
+.sidebar-nav { flex: 1; padding: 6px 0; overflow-y: auto; }
+.sidebar-nav ul li { padding: 0 10px; }
+.sidebar-nav ul li a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 7px 13px; border-radius: var(--radius-sm);
+    font-size: 11.5px; font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+    transition: all var(--transition);
+}
+.sidebar-nav ul li a:hover { background: var(--bg-sidebar-hover); color: #fff; transform: translateX(4px); }
+.sidebar-nav ul li.active a { background: var(--primary-gradient); color: #fff; box-shadow: 0 4px 20px rgba(30, 136, 168, 0.35); }
+.sidebar-nav ul li a i { width: 18px; text-align: center; font-size: 12px; }
+.sidebar-nav .divider {
+    padding: 10px 14px 4px; font-size: 9px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1.1px;
+    color: rgba(255, 255, 255, 0.22);
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    margin-top: 4px;
+}
+.sidebar-nav .divider:first-of-type { border-top: none; }
+.sidebar-footer {
+    padding: 12px 16px;
+    border-top: 2px solid rgba(30, 136, 168, 0.2);
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(30, 136, 168, 0.06);
+}
+.theme-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(30, 136, 168, 0.25);
+    color: #fff; width: 34px; height: 34px; border-radius: 50%;
+    font-size: 14px; transition: all var(--transition);
+    display: flex; align-items: center; justify-content: center;
+}
+.theme-btn:hover { background: var(--secondary-gradient); border-color: var(--secondary); transform: rotate(20deg); }
+.sidebar-footer small { color: rgba(255,255,255,0.3); font-size: 10px; font-weight: 600; }
+
+/* MAIN */
+.main-content {
+    margin-left: var(--sidebar-width);
+    flex: 1; display: flex; flex-direction: column;
+    height: 100vh; overflow: hidden;
+    transition: margin var(--transition);
+}
+
+.topbar {
+    background: var(--bg-card);
+    padding: 0 20px;
+    height: var(--topbar-height);
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 2px solid var(--border);
+    box-shadow: var(--shadow);
+    flex-shrink: 0; z-index: 50;
+    position: relative; overflow: hidden;
+}
+.topbar::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px; background: var(--gradient-hero);
+}
+.menu-btn {
+    display: none; background: none; border: none;
+    font-size: 20px; color: var(--text); padding: 4px 8px;
+}
+.topbar h1 {
+    font-size: 16px; font-weight: 800; flex: 1;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    background: var(--gradient-hero);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.topbar-actions { display: flex; align-items: center; gap: 8px; }
+.currency-selector {
+    padding: 5px 10px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg); font-size: 11px;
+    font-weight: 700; color: var(--text);
+}
+.action-btn {
+    background: var(--bg); border: 2px solid var(--border);
+    padding: 5px 10px; border-radius: var(--radius-sm);
+    font-size: 12px; color: var(--text);
+    transition: all var(--transition);
+    display: flex; align-items: center; gap: 4px;
+    font-weight: 600;
+}
+.action-btn:hover {
+    background: var(--primary-gradient); color: #fff;
+    border-color: var(--primary); transform: translateY(-2px);
+}
+
+.workspace {
+    flex: 1; overflow-y: auto;
+    padding: 16px 20px 74px;
+    background: var(--bg);
+}
+
+.page { display: none; animation: fadeIn 0.35s ease; }
+.page.active { display: block; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    transition: all var(--transition);
+    position: relative; overflow: hidden;
+}
+.card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 4px; background: var(--gradient-hero);
+}
+.card:hover { box-shadow: var(--shadow-hover); }
+.card h2 {
+    font-size: 17px; margin-bottom: 14px;
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 800;
+}
+.card h2 i { font-size: 20px; color: var(--primary); }
+.module-badge {
+    font-size: 9px; background: var(--primary-gradient); color: #fff;
+    padding: 2px 10px; border-radius: 20px; margin-left: auto;
+    font-weight: 700; letter-spacing: 0.3px;
+}
+
+.formula-box {
+    background: linear-gradient(135deg, rgba(11, 93, 124, 0.06), rgba(243, 156, 18, 0.06));
+    border-left: 4px solid var(--secondary);
+    padding: 10px 14px; border-radius: 6px;
+    margin-bottom: 14px; font-size: 12px;
+    color: var(--text); line-height: 1.7;
+}
+.formula-box strong { color: var(--primary); }
+.formula-box code {
+    background: rgba(11, 93, 124, 0.1);
+    padding: 1px 6px; border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    font-size: 11.5px; color: var(--primary); font-weight: 700;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+    gap: 12px;
+}
+.form-grid .full-width { grid-column: 1 / -1; }
+.form-group { display: flex; flex-direction: column; gap: 3px; }
+.form-group label {
+    font-size: 11px; font-weight: 700; color: var(--text-light);
+    text-transform: uppercase; letter-spacing: 0.4px;
+}
+.form-control, .form-group input, .form-group select {
+    padding: 7px 11px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 13px; background: var(--bg); color: var(--text);
+    transition: all var(--transition);
+    font-family: inherit; font-weight: 500;
+}
+.form-control:focus, .form-group input:focus, .form-group select:focus {
+    outline: none; border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(30, 136, 168, 0.12);
+    background: var(--bg-card);
+}
+
+.result-group {
+    margin-top: 8px; padding: 14px 16px;
+    background: linear-gradient(135deg, rgba(11, 93, 124, 0.07), rgba(243, 156, 18, 0.07));
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--primary-light);
+    position: relative;
+}
+.result-group::before {
+    content: '📊'; position: absolute; right: 12px; top: 12px; font-size: 20px;
+}
+.result-group label {
+    font-size: 12px; font-weight: 700; color: var(--text);
+}
+.result-value {
+    font-size: 22px; font-weight: 800;
+    background: var(--gradient-hero);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    display: block; margin-top: 2px;
+    word-break: break-word;
+}
+
+.btn-primary, .btn-secondary, .btn-danger, .btn-success, .btn-purple {
+    padding: 8px 18px; border: none;
+    border-radius: var(--radius-sm);
+    font-weight: 700; font-size: 12px;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: all var(--transition); cursor: pointer;
+}
+.btn-primary { background: var(--primary-gradient); color: #fff; box-shadow: 0 4px 15px rgba(11, 93, 124, 0.25); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(11, 93, 124, 0.35); }
+.btn-secondary { background: var(--secondary-gradient); color: #fff; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.25); }
+.btn-secondary:hover { transform: translateY(-2px); }
+.btn-danger { background: var(--danger-gradient); color: #fff; }
+.btn-danger:hover { transform: translateY(-2px); }
+.btn-success { background: var(--accent-gradient); color: #fff; }
+.btn-success:hover { transform: translateY(-2px); }
+.btn-purple { background: var(--purple-gradient); color: #fff; }
+.btn-purple:hover { transform: translateY(-2px); }
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 12px;
+}
+.stat-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 14px;
+    display: flex; align-items: center; gap: 12px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: all var(--transition);
+    position: relative; overflow: hidden;
+}
+.stat-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 4px;
+}
+.stat-card:nth-child(1)::before { background: var(--primary-gradient); }
+.stat-card:nth-child(2)::before { background: var(--secondary-gradient); }
+.stat-card:nth-child(3)::before { background: var(--accent-gradient); }
+.stat-card:nth-child(4)::before { background: var(--purple-gradient); }
+.stat-card:nth-child(5)::before { background: var(--danger-gradient); }
+.stat-card:nth-child(6)::before { background: var(--teal-gradient); }
+.stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+.stat-card i { font-size: 22px; }
+.stat-card:nth-child(1) i { color: var(--primary); }
+.stat-card:nth-child(2) i { color: var(--secondary); }
+.stat-card:nth-child(3) i { color: var(--accent); }
+.stat-card:nth-child(4) i { color: var(--purple); }
+.stat-card:nth-child(5) i { color: var(--danger); }
+.stat-card:nth-child(6) i { color: var(--teal); }
+.stat-info { display: flex; flex-direction: column; }
+.stat-label { font-size: 9px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.6px; }
+.stat-value { font-size: 18px; font-weight: 800; color: var(--text); }
+
+.dashboard-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 16px; border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    transition: all var(--transition);
+}
+.dashboard-card.full-width { grid-column: 1 / -1; }
+.dashboard-card h3 {
+    font-size: 14px; margin-bottom: 10px;
+    font-weight: 700; display: flex; align-items: center; gap: 8px;
+}
+.dashboard-card h3::before {
+    content: ''; width: 4px; height: 16px;
+    background: var(--gradient-hero); border-radius: 4px;
+}
+.quick-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.quick-actions button {
+    padding: 6px 12px;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg);
+    font-weight: 600; font-size: 11px;
+    transition: all var(--transition);
+    display: flex; align-items: center; gap: 5px;
+}
+.quick-actions button:hover {
+    background: var(--primary-gradient); color: #fff;
+    border-color: var(--primary); transform: translateY(-2px);
+}
+.recent-list { min-height: 40px; }
+.text-muted { color: var(--text-light); font-size: 12px; }
+.recent-item {
+    display: flex; justify-content: space-between;
+    padding: 6px 0; border-bottom: 1px solid var(--border);
+    font-size: 12px;
+}
+.recent-item:last-child { border-bottom: none; }
+.recent-name { font-weight: 600; }
+.recent-value { color: var(--text-light); }
+
+.check-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px; border-radius: 20px;
+    font-size: 10px; font-weight: 700;
+    margin-left: 8px;
+}
+.check-pass { background: rgba(39, 174, 96, 0.15); color: var(--accent); }
+.check-fail { background: rgba(231, 76, 60, 0.15); color: var(--danger); }
+
+/* Materials Table */
+.mat-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 12px; margin-top: 10px;
+}
+.mat-table th {
+    background: var(--primary-gradient); color: #fff;
+    padding: 8px 10px; text-align: left;
+    font-weight: 700; font-size: 10px; text-transform: uppercase;
+}
+.mat-table td { padding: 7px 10px; border-bottom: 1px solid var(--border); }
+.mat-table tr:hover td { background: rgba(11, 93, 124, 0.04); }
+.mat-table .total-row {
+    background: linear-gradient(135deg, rgba(11, 93, 124, 0.08), rgba(243, 156, 18, 0.08));
+    font-weight: 800; border-top: 2px solid var(--primary);
+}
+.mat-table .section-row {
+    background: var(--bg);
+    font-weight: 800;
+    color: var(--primary);
+    font-size: 11px;
+    text-transform: uppercase;
+}
+
+.boq-summary-card {
+    background: linear-gradient(135deg, rgba(11, 93, 124, 0.05), rgba(243, 156, 18, 0.05));
+    border-radius: var(--radius-sm);
+    padding: 12px 16px;
+    border-left: 4px solid var(--primary);
+    margin-top: 10px;
+    display: flex; justify-content: space-between;
+    align-items: center; flex-wrap: wrap; gap: 10px;
+}
+.total-amount { font-size: 20px; font-weight: 800; color: var(--primary); }
+.total-amount.etb { color: var(--secondary); }
+
+/* BOTTOMBAR */
+.bottombar {
+    position: fixed; bottom: 0;
+    left: var(--sidebar-width); right: 0;
+    height: var(--bottombar-height);
+    background: var(--bg-card);
+    border-top: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px; z-index: 40;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+    transition: left var(--transition);
+}
+.bottombar::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 3px; background: var(--gradient-hero);
+}
+.nav-left, .nav-right { display: flex; align-items: center; gap: 8px; }
+.nav-center { display: flex; align-items: center; gap: 6px; }
+.page-indicator {
+    font-size: 11px; color: var(--text-light);
+    font-weight: 700; padding: 2px 10px;
+    background: var(--bg); border-radius: 20px;
+    border: 2px solid var(--border);
+}
+.nav-btn {
+    background: var(--bg); border: 2px solid var(--border);
+    padding: 5px 12px; border-radius: var(--radius-sm);
+    font-size: 11px; font-weight: 600; color: var(--text);
+    transition: all var(--transition);
+    display: flex; align-items: center; gap: 5px;
+}
+.nav-btn:hover:not(:disabled) {
+    background: var(--primary-gradient); color: #fff;
+    border-color: var(--primary); transform: translateY(-2px);
+}
+.nav-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.notification-toast {
+    position: fixed; bottom: 74px; right: 20px;
+    padding: 10px 20px; border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-lg); z-index: 9999;
+    font-size: 12px; font-weight: 600;
+    animation: slideUp 0.4s ease;
+    max-width: 360px;
+    background: var(--bg-card); color: var(--text);
+    border: 2px solid var(--primary-light);
+    border-left: 5px solid var(--primary);
+}
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideDown {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(30px); }
+}
+
+/* PRINT */
+@page { size: A4; margin: 12mm 10mm 18mm 10mm; }
+@media print {
+    .sidebar, .topbar, .bottombar, .quick-actions, .menu-btn, .theme-btn, .action-btn, .no-print, .btn-primary, .btn-secondary, .btn-danger, .btn-success, .btn-purple { display: none !important; }
+    .main-content { margin-left: 0 !important; padding: 0 !important; height: auto !important; overflow: visible !important; }
+    .workspace { padding: 0 !important; overflow: visible !important; height: auto !important; }
+    .page { display: block !important; page-break-after: always; page-break-inside: avoid; }
+    .page:not(.active) { display: none !important; }
+    #report { display: block !important; }
+    .card { border: 1px solid #ccc !important; box-shadow: none !important; padding: 8px !important; }
+    .card::before { display: none !important; }
+    .result-value { -webkit-text-fill-color: #000 !important; background: none !important; }
+    .topbar h1 { -webkit-text-fill-color: #000 !important; background: none !important; }
+    .mat-table th { background: #0B5D7C !important; color: #fff !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    body { counter-reset: page; }
+    .report-page-number::after {
+        content: "Page " counter(page);
+        counter-increment: page;
+        display: block; text-align: center;
+        font-size: 9px; color: #7F8C8D;
+        margin-top: 12px; border-top: 1px solid #BDC3C7;
+        padding-top: 8px;
+    }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); width: 280px; }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; }
+    .bottombar { left: 0; padding: 0 10px; }
+    .menu-btn { display: block; }
+    .dashboard-grid { grid-template-columns: 1fr 1fr; }
+    .form-grid { grid-template-columns: 1fr; }
+    .topbar h1 { font-size: 13px; }
+    .action-btn span { display: none; }
+    .workspace { padding: 10px 12px 70px; }
+    .bottombar .nav-btn span { display: none; }
+}
+@media (max-width: 480px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+    .stat-card { padding: 10px 12px; }
+    .card { padding: 14px; }
+    .quick-actions { flex-direction: column; }
+    .quick-actions button { width: 100%; justify-content: center; }
+    .mat-table { font-size: 10px; }
+    .mat-table th, .mat-table td { padding: 4px 6px; }
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <i class="fas fa-hard-hat"></i>
+        <span>G+5 Substructure</span>
+        <small>ETBCS</small>
+    </div>
+    <nav class="sidebar-nav">
+        <ul>
+            <li class="active"><a href="#dashboard" data-page="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li class="divider">📐 SETUP & EARTHWORKS</li>
+            <li><a href="#site-setup" data-page="site-setup"><i class="fas fa-ruler-combined"></i> 1. Site Setup</a></li>
+            <li><a href="#site-clearing" data-page="site-clearing"><i class="fas fa-broom"></i> 2. Site Clearing</a></li>
+            <li><a href="#bulk-exc" data-page="bulk-exc"><i class="fas fa-mountain"></i> 3. Bulk Excavation</a></li>
+            <li><a href="#pit-exc" data-page="pit-exc"><i class="fas fa-excavator"></i> 4. Pit Excavation</a></li>
+            <li class="divider">🏗️ STRUCTURE</li>
+            <li><a href="#footing" data-page="footing"><i class="fas fa-border-all"></i> 5. Footing Design</a></li>
+            <li><a href="#stub" data-page="stub"><i class="fas fa-arrow-up"></i> 6. Column Stub</a></li>
+            <li><a href="#tie-beam" data-page="tie-beam"><i class="fas fa-link"></i> 7. Tie Beam</a></li>
+            <li><a href="#masonry-below" data-page="masonry-below"><i class="fas fa-layer-group"></i> 8. Masonry Below GL</a></li>
+            <li><a href="#masonry-above" data-page="masonry-above"><i class="fas fa-cube"></i> 9. Masonry Above GL</a></li>
+            <li class="divider">🧱 CONCRETE & MATERIALS</li>
+            <li><a href="#lean-concrete" data-page="lean-concrete"><i class="fas fa-trowel"></i> 10. Lean Concrete</a></li>
+            <li><a href="#concrete-mix" data-page="concrete-mix"><i class="fas fa-flask"></i> 11. Concrete Mix</a></li>
+            <li><a href="#bar-schedule" data-page="bar-schedule"><i class="fas fa-th-list"></i> 12. Bar Schedule</a></li>
+            <li class="divider">📋 SUMMARIES</li>
+            <li><a href="#boq" data-page="boq"><i class="fas fa-file-invoice"></i> 13. BOQ Summary</a></li>
+            <li><a href="#report" data-page="report"><i class="fas fa-print"></i> 14. A4 Report</a></li>
+        </ul>
+    </nav>
+    <div class="sidebar-footer">
+        <button id="themeToggle" class="theme-btn"><i class="fas fa-moon"></i></button>
+        <small>v5.0</small>
+    </div>
+</aside>
+
+<main class="main-content">
+    <header class="topbar">
+        <button id="sidebarToggle" class="menu-btn"><i class="fas fa-bars"></i></button>
+        <h1 id="pageTitle">🏗️ ETBCS G+5 Complete Substructure</h1>
+        <div class="topbar-actions">
+            <select id="currencySelector" class="currency-selector">
+                <option value="ETB">🇪🇹 ETB</option>
+                <option value="USD" selected>🇺🇸 USD</option>
+            </select>
+            <button id="printBtn" class="action-btn"><i class="fas fa-print"></i></button>
+            <button id="pdfBtn" class="action-btn"><i class="fas fa-file-pdf"></i></button>
+            <button id="excelBtn" class="action-btn"><i class="fas fa-file-excel"></i></button>
+        </div>
+    </header>
+
+    <div class="workspace" id="workspace">
+
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="page active">
+            <div class="dashboard-grid">
+                <div class="stat-card"><i class="fas fa-ruler-combined"></i><div class="stat-info"><span class="stat-label">Area (m²)</span><span class="stat-value" id="dashArea">0</span></div></div>
+                <div class="stat-card"><i class="fas fa-weight-hanging"></i><div class="stat-info"><span class="stat-label">Steel (kg)</span><span class="stat-value" id="dashSteel">0</span></div></div>
+                <div class="stat-card"><i class="fas fa-cubes"></i><div class="stat-info"><span class="stat-label">Concrete (m³)</span><span class="stat-value" id="dashConcrete">0</span></div></div>
+                <div class="stat-card"><i class="fas fa-bag-shopping"></i><div class="stat-info"><span class="stat-label">Cement (bags)</span><span class="stat-value" id="dashCement">0</span></div></div>
+                <div class="stat-card"><i class="fas fa-truck"></i><div class="stat-info"><span class="stat-label">Excavation (m³)</span><span class="stat-value" id="dashExcavation">0</span></div></div>
+                <div class="stat-card"><i class="fas fa-dollar-sign"></i><div class="stat-info"><span class="stat-label">Total Cost</span><span class="stat-value" id="dashCost">0</span></div></div>
+                <div class="dashboard-card full-width">
+                    <h3>🚀 Guided Workflow (Follow Steps 1-14)</h3>
+                    <div class="quick-actions">
+                        <button onclick="navigateTo('site-setup')"><i class="fas fa-ruler-combined"></i> 1. Setup</button>
+                        <button onclick="navigateTo('site-clearing')"><i class="fas fa-broom"></i> 2. Clearing</button>
+                        <button onclick="navigateTo('bulk-exc')"><i class="fas fa-mountain"></i> 3. Bulk Exc</button>
+                        <button onclick="navigateTo('pit-exc')"><i class="fas fa-excavator"></i> 4. Pit Exc</button>
+                        <button onclick="navigateTo('footing')"><i class="fas fa-border-all"></i> 5. Footing</button>
+                        <button onclick="navigateTo('stub')"><i class="fas fa-arrow-up"></i> 6. Stub</button>
+                        <button onclick="navigateTo('tie-beam')"><i class="fas fa-link"></i> 7. Tie Beam</button>
+                        <button onclick="navigateTo('boq')"><i class="fas fa-file-invoice"></i> 13. BOQ</button>
+                    </div>
+                </div>
+                <div class="dashboard-card full-width">
+                    <h3>📋 Recent Activity</h3>
+                    <div id="recentList" class="recent-list"><p class="text-muted">No calculations yet. Start with Step 1 →</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 1: SITE SETUP -->
+        <section id="site-setup" class="page">
+            <div class="card"><span class="module-badge">STEP 1</span>
+                <h2><i class="fas fa-ruler-combined"></i> Site Setup & Area Calculation</h2>
+                <div class="formula-box">
+                    <strong>📐 Formula:</strong> <code>Area = Length × Width</code><br>
+                    <strong>⚠️ Note:</strong> 25m × 10m = <strong>250 m²</strong> (your stated "125 m²" is incorrect — verify your actual dimensions)
+                </div>
+                <form id="setupForm" class="form-grid">
+                    <div class="form-group"><label>📏 Building Length (m)</label><input type="number" id="setupL" value="25" step="0.1" min="1" /></div>
+                    <div class="form-group"><label>📏 Building Width (m)</label><input type="number" id="setupW" value="10" step="0.1" min="1" /></div>
+                    <div class="form-group"><label>🏢 Total Floors</label><select id="setupFloors" class="form-control"><option value="5" selected>G+5 (6 floors)</option><option value="4">G+4 (5 floors)</option><option value="6">G+6 (7 floors)</option></select></div>
+                    <div class="form-group"><label>📐 Bay X Spacing (m)</label><input type="number" id="setupBayX" value="5" step="0.5" min="3" max="8" /></div>
+                    <div class="form-group"><label>📐 Bay Y Spacing (m)</label><input type="number" id="setupBayY" value="5" step="0.5" min="3" max="8" /></div>
+                    <div class="form-group"><label>🧱 Column Size (mm)</label><select id="setupColSize" class="form-control"><option value="300">300×300</option><option value="350">350×350</option><option value="400" selected>400×400</option><option value="450">450×450</option><option value="500">500×500</option></select></div>
+                    <div class="form-group"><label>🏗️ Concrete Grade</label><select id="setupConc" class="form-control"><option value="20">C20 (1:2:4)</option><option value="25" selected>C25 (1:1.5:3)</option><option value="30">C30</option></select></div>
+                    <div class="form-group"><label>🔩 Steel Grade</label><select id="setupSteel" class="form-control"><option value="300">S300</option><option value="400" selected>S400</option><option value="460">S460</option><option value="500">S500</option></select></div>
+                    <div class="form-group"><label>🏔️ Soil Capacity (kPa)</label><input type="number" id="setupSoil" value="150" step="10" min="50" /></div>
+                    <div class="form-group"><label>📏 Foundation Depth (m)</label><input type="number" id="setupFoundDepth" value="2.0" step="0.1" min="0.5" /></div>
+                    <div class="form-group"><label>🏠 Live Load (kN/m²)</label><select id="setupLive" class="form-control"><option value="2.0" selected>Residential - 2.0</option><option value="3.0">Office - 3.0</option><option value="4.0">Commercial - 4.0</option></select></div>
+                    <div class="form-group"><label>🧱 Slab Thickness (mm)</label><input type="number" id="setupSlabThick" value="150" step="10" min="100" max="250" /></div>
+                    <div class="form-group full-width result-group">
+                        <label>📊 Calculated Values</label>
+                        <output id="setupResult" class="result-value" style="font-size:15px;">Enter values and click Save</output>
+                    </div>
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Save Setup</button>
+                        <button type="reset" class="btn-secondary"><i class="fas fa-undo"></i> Reset</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- MODULE 2: SITE CLEARING -->
+        <section id="site-clearing" class="page">
+            <div class="card"><span class="module-badge">STEP 2</span>
+                <h2><i class="fas fa-broom"></i> Site Clearing</h2>
+                <div class="formula-box">
+                    <strong>📐 Formula:</strong> <code>V = Area × Topsoil_Depth × (1 + Bulking)</code><br>
+                    <strong>🏗️ ETBCS:</strong> Remove topsoil 150–300mm (organic matter, roots) before excavation
+                </div>
+                <form id="clearingForm" class="form-grid">
+                    <div class="form-group"><label>📏 Area (m²) - Auto</label><input type="number" id="clArea" value="250" step="0.1" min="1" readonly style="background:var(--border-light);" /></div>
+                    <div class="form-group"><label>📏 Topsoil Depth (m)</label><input type="number" id="clDepth" value="0.2" step="0.05" min="0.1" max="0.5" /></div>
+                    <div class="form-group"><label>📊 Bulking Factor (%)</label><input type="number" id="clBulking" value="25" step="1" min="0" max="50" /></div>
+                    <div class="form-group full-width result-group">
+                        <label>📊 Site Clearing Volume</label>
+                        <output id="clResult" class="result-value">0.00 m³</output>
+                    </div>
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-primary"><i class="fas fa-calculator"></i> Calculate</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- MODULE 3: BULK EXCAVATION -->
+        <section id="bulk-exc" class="page">
+            <div class="card"><span class="module-badge">STEP 3</span>
+                <h2><i class="fas fa-mountain"></i> Bulk Excavation</h2>
+                <div class="formula-box">
+                    <strong>📐 Formula (Trapezoidal with slope):</strong><br>
+                    <code>V = (D/3) × (A₁ + A₂ + √(A₁ × A₂))</code><br>
+                    <strong>Where:</strong> A₁ = Bottom area, A₂ = Top area, D = Depth<br>
+                    <strong>Alternative (Rectangular):</strong> <code>V = L × W × D</code> (no slope)
+                </div>
+                <form id="bulkForm" class="form-grid">
+                    <div class="form-group"><label>📏 Bottom L (m)</label><input type="number" id="beBL" value="25" step="0.1" min="1" /></div>
+                    <div class="form-group"><label>📏 Bottom W (m)</label><input type="number" id="beBW" value="10" step="0.1" min="1" /></div>
+                    <div class="form-group"><label>📏 Depth (m)</label><input type="number" id="beDepth" value="2.0" step="0.1" min="0.5" /></div>
+                    <div class="form-group"><label>📐 Slope (H:V)</label><select id="beSlope" class="form-control"><option value="0">Vertical (0:1)</option><option value="0.25">0.25:1</option><option value="0.5" selected>0.5:1</option><option value="0.75">0.75:1</option><option value="1">1:1</option></select></div>
+                    <div class="form-group"><label>📊 Bulking (%)</label><input type="number" id="beBulking" value="20" step="1" min="0" max="40" /></div>
+                    <div class="form-group full-width result-group">
+                        <label>📊 Bulk Excavation Volume</label>
+                        <output id="beResult" class="result-value">0.00 m³</output>
+                    </div>
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-primary"><i class="fas fa-calculator"></i> Calculate</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- MODULE 4: PIT EXCAVATION -->
+        <section id="pit-exc" class="page">
+            <div class="card"><span class="module-badge">STEP 4</span>
+                <h2><i class="fas fa-excavator"></i> Pit Excavation (per Footing)</h2>
+                <div class="formula-box">
+                    <strong>📐 Formula:</strong> <code>V_pit = (L_f + 2s) × (W_f + 2s) × D</code><br>
+                    <strong>Where:</strong> s = working space (300–500mm), L_f = footing length<br>
+                    <strong>Total:</strong> <code>V_total = V_pit × Number_of_Columns</code>
+                </div>
+                <form id="pitForm" class="form-grid">
+                    <div class="form-group"><label>📏 Footing Length (m)</label><input type="number" id="pitFL" value="2.5" step="0.05" min="0.5" /></div>
+                    <div class="form-group"><label>📏 Footing Width (m)</label><input type="number" id="pitFW" value="2.5" step="0.05" min="0.5" /></div>
+                    <div class="form-group"><label>📏 Pit Depth (m)</label><input type="number" id="pitDepth" value="2.0" step="0.1" min="0.5" /></div>
+                    <div class="form-group"><label>📏 Working Space each side (m)</label><input type="number" id="pitWork" value="0.3" step="0.05" min="0.1" /></div>
+                    <div class="form-group"><label>🔢 Number of Columns</label><input type="number" id="pitCols" value="18" step="1" min="1" /></div>
+                    <div class="form-group full-width result-group">
+                        <label>📊 Pit Excavation Total</label>
+                        <output id="pitResult" class="result-value">0.00 m³</output>
+                    </div>
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-primary"><i class="fas fa-calculator"></i> Calculate</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- MODULE 5: FOOTING DESIGN -->
+        <section id="footing" class="page">
+            <div class="card"><span class="module-badge">STEP 5</span>
+                <h2><i class="fas fa-border-all"></i> Footing Design (ETBCS-2 §9.8)</h2>
+                <div class="formula-box">
+                    <strong>📐 ETBCS Formulas:</strong><br>
+                    <strong>1. Area:</strong> <code>A_req = N_ser / q_allow</code><br>
+                    <strong>2. Punching:</strong> <code>v_Ed = V_Ed/(u·d) ≤ v_Rd,c</code><br>
+                    <strong>3. Steel:</strong> <code>A_s = M_Ed/(0.87·f_yk·0.9d)</code><br>
+                    <strong>4. Min Steel:</strong> <code>A_s,min = 0.0013·b·h</code><br>
+                    <strong>5. Formwork:</strong> <code>A = 2H(L+W)</code>
+                </div>
+                <form id="footingForm" class="form-grid">
+                    <div class="form-group"><label>⚖️ Column Load (kN)</label><input type="number" id="ftLoad" value="1000" step="10" min="100" /></div>
+                    <div class="form-group"><label>🏔️ Soil Capacity (kPa)</label><input type="number" id="ftSoil" value="150" step="10" min="50" /></div>
+                    <div class="form-group"><label>🏗️ Concrete fck (MPa)</label><input type="number" id="ftFck" value="25" step="1" min="20" /></div>
+                    <div class="form-group"><label>🔩 Steel fyk (MPa)</label><input type="number" id="ftFyk" value="400" step="10" min="300" /></div>
+                    <div class="form-group"><label>🧱 Column Size (mm)</label><input type="number" id="ftColSize" value="400" step="50" min="200" /></div>
+                    <div class="form-group"><label>🔩 Bar Dia (mm)</label><select id="ftBarDia" class="form-control"><option value="12">12</option><option value="14">14</option><option value="16" selected>16</option><option value="20">20</option></select></div>
+                    <div class="form-group"><label>🛡️ Cover (mm)</label><input type="number" id="ftCover" value="50" step="5" min="30" max="75" /></div>
+                    <div class="form-group full-width result-group">
+                        <label>📊 Footing Design Result</label>
+                        <output id="ftResult" class="result-value" style="font-size:14px;">Click to calculate</output>
+                    </div>
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-primary"><i class="fas fa-calculator"></i> Design Footing</button>
+                    </div>
+                </form>
+                <div id="ftDetailsBox" style="margin-top:14px;"></div>
+            </div>
+        </section>
+
+        <!-- MODULE 6: COLUMN STUB -->
+        <section id="stub" class="page">
+            <div class="card"><span class="module-badge">STEP 6</span>
+                <h2><i class="fas fa-arrow-up"></i> Column Stub Design (ETBCS-2 §9.5)</h2>
+                <div class="formula-box">
+                    <strong>📐 ETBCS Formulas:</strong><br>
+                    <strong>Min Steel:</strong> <code>A_s,min = 0.01·A_c</code> (1% of concrete area)<br>
+                    <strong>Max Steel:</strong> <code>A_s,max = 0.04·A_c</code> (4%)<br>
+                    <strong>Capacity:</strong> <code>N_Rd = 0.85·f_cd·(A_c−A_s) + f_yd·A_s</code><br>
+                    <strong>Tie Spacing:</strong> <code>s ≤ min(12d_b, 0.6b, 300mm)</code><br>
+                    <strong>Tie Length:</strong> <code>2(b+h) − 8cover + 24d_tie</code>
+                </div>
+                <form id="stubForm" class="form-grid">
+                    <div class="form-group"><label>📏 Width b (mm)</label><input type="number" id="stB" value="400" step="50" min="200" /></div>
+                    <div class="form-group"><label>📏 Depth h (mm)</label><input type="number" id="stH" value="400" step="50" min="200" /></div>
+                    <div class="form-group"><label>📏 Height (m)</label><input type="number" id="stHeight" value="1.5" step="0.1" min="0.5" /></div>
+                    <div class="form-group"><label>⚖️ Column Load (kN)</label><input type="number" id="stLoad" value="1000" step="10" min="100" /></div>
+                    <div class="form-group"><label>🏗️ Concrete fck (MPa)</label><input type="number" id="stFck" value="25" step="1" min="20" /></div>
+                    <div class="form-group"><label>🔩 Steel fyk (MPa)</label><input type="number" id="stFyk" value="400" step="10" min="300" /></div>
+                    <div class="form-group"><label>🔩 Main Bar (mm)</label><select id="stMainDia" class="form-control"><option value="16">16</option><option value="20" selected>20</option><option value="25">25</option></select></div>
+                    <div class="form-group"><label>🔗 Tie Bar (mm)</label><select id="stTieDia" class="form-control"><option value="8" selected>8</option><option value="10">10</option></select></div>
+                    <div class="form-group"><label>🛡️ Cover (mm)</label><input type="number" id="stCover" value="40" step="5" min="25" max="75" /></div>
+                    <div class="form-group"><label>🔢 Number of Columns</label><input type="number" id="stCols" value="18" step="1" min="1" /></div>
+                    <div class="form-group full-width result-group">
+                        <label>📊 Stub Design Result</label>
+                        <output id="stResult" class="result-value" style="font-size:14px;">Click to calculate</output>
+                    </div>
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-primary"><i class="fas fa-calculator"></i> Design Column Stub</button>
+                    </div>
+                </form>
+                <div id="stDetailsBox" style="margin-top:14px;"></div>
+            </div>
+        </section>
+
+        <!-- MODULE 7: TIE BEAM -->
+        <section id="tie-beam" class="page">
+            <div class="card"><span class="module-badge">STEP 7</span>
+                <h2><i class="fas fa-link"></i> Tie Beam Design (ETBCS-2 §9.2)</h2>
+                <div class="formula-box">
+                    <strong>📐 ETBCS Formulas:</strong><br>
+                    <strong>Load:</strong> <code>w_u = 1.35×G + 1.5×Q</code> | <strong>Moment:</strong> <code>M_u = w_u·L²/8</code><br>
+                    <strong>Steel:</strong> <code>A_s = M_u/(0.87·f_yk·0.9d)</code><br>
+                    <strong>Min Steel:</strong> <code>A_s,min = max(0.26·f_ctm/f_yk, 0.0013)·b·d</code><br>
+                    <strong>Stirrups:</strong> <code>s ≤ 0.75d</code> (shear zone)
+                </div>
+                <form id="tieForm" class="form-grid">
+                    <div class="form-group"><label>📏 Width b (mm)</label><input type="number" id="tbB" value="300" step="25" min="200" /></div>
+                    <div class="form-group"><label>📏 Depth h (mm)</label><input type="number" id="tbH" value="500" step="25" min="300" /></div>
+                    <div class="form-group"><label>📏 Span L (m)</label><input type="number" id="tbSpan" value="5" step="0.1" min="2" /></div>
+                    <div class="form-group"><label>⚖️ UDL (kN/m)</label><input type="number" id="tbUDL" value="25" step="1" min="5" /></div>
+                    <div class="form-group"><label>🏗️ Concrete fck (MPa)</label><input type="number" id="tbFck" value="25" step="1" min="20" /></div>
+                    <div class="form-group"><label>🔩 Steel fyk (MPa)</label><input type="number" id="tbFyk" value="400" step="10" min="300" /></div>
+                    <div class="form-group"><label>🔩 Main Bar (mm)</label><select id="tbMainDia" class="form-control"><option value="14">14</option><option value="16" selected>16</option><option value="20">20</option></select></div>
+                    <div class="form-group"><label>🔗 Stirrup (mm)</label><select id="tbStirDia" class="form-control"><option value="8" selected>8</option><option value="10">10</option></select></div>
+                    <div class="form-group"><label>🛡️ Cover (mm)</label><input type="number" id="tbCover" value="30" step="5" min="20" max="50" /></div>
+                    <div class="form-group"><label>🔢 Number of Beams</label><input type="number" id="tbCount" value="20" step="1" min="1" /></div>
+                    <div class="form-group full-width result-group">
+                        <label>📊 Tie Beam Design Result</label>
+                        <output id="tbResult" class="result-value" style="font-size:14px;">Click to calculate</output>
+                    </div>
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-primary"><i class="fas fa-calculator"></i> Design Tie Beam</button>
+                    </div>
+                </form>
+                <div id="tbDetailsBox" style="margin-top:14px;"></div>
+            </div>
+        </section>
+
+        <!-- MODULE 8: MASONRY BELOW GL -->
+        <section id="masonry-below" class="page">
+            <div class="card"><span class="module-badge">STEP 8</span>
+                <h2><i class="fas fa-layer-group"></i> Masonry Below Natural Ground Level</h2>
+                <div class="formula-box">
+                    <strong>📐 Formula:</strong> <code>V = L × H × t</code> (m³)<br>
+                    <strong>Blocks:</strong> <code>N = V × 62.5 blocks/m³</code> (20cm HCM blocks)<br>
+                    <strong>Mortar (1:4):</strong> <code>V_mortar = V × 0.30 m³/m³</code><br>
+                    <strong>Cement:</strong> <code>0.3 × 383 = 115 kg/m³ masonry</code><br>
+                    <strong>Sand:</strong> <code>0.3 × 1.06 = 0.32 m³/m³ masonry</code>
+                </div>
+                <form id="masonryBelowForm" class="form-grid">
+                    <div class="form-group"><label>📏 Total Wall Length (m)</label><input type="number" id="mbL" value="60" step="0.5" min="1" /></div>
+                    <div class="form-group"><label>📏 Wall Height (m)</label><input type="number" id="mbH" value="0.8" step="0.1" min="0.3" /></div>
+                    <div class="form-group"><label>📏 Wall Thickness (m)</label><input type="number" id="mbT" value="0.20" step="0.05" min="0.10" /></div>
+                    <div class="form-group"><label>🧱 Block Size</label><select id="mbBlockType" class="form-control"><option value="20">20cm HCM (40×20×20)</option><option value="15">15cm HCM (40×20×15)</option><option value="10">10cm HCM (40×20×10)</option></select></div>
+                    <div class="form-group"><label>📐 Mortar Mix</label><select id="mbMortar" class="form-control"><option value="4">1:4 (Strong)</option><option value="5">1:5 (Medium)</option><option value="6" selected>1:6 (Normal)</option></select></div>
+                    <div class="form-group full-width result-group">
+                        <label>📊 Masonry Below GL - Complete Materials</label>
+                        <output id="mbResult" class="result-value" style="font-size:14px;">Click to calculate</output>
+                    </div>
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-primary"><i class="fas fa-calculator"></i> Calculate Masonry</button>
+                    </div>
+                </form>
+                <div id="mbDetailsBox" style="margin-top:14px;"></div>
+            </div>
+        </section>
+
+        <!-- MODULE 9: MASONRY ABOVE GL -->
+        <section id="masonry-above" class="page">
+            <div class="card"><span class="module-badge">STEP 9</span>
+                <h2><i class="fas fa-cube"></i> Masonry Above Natural Ground Level</h2>
+                <div class="formula-box">
+                    <strong>📐 Formula:</strong> <code>V = L × H × t</code> (m³)<br>
+                    <strong>Ground Floor Walls:</strong> Between tie beam and ground floor slab<br>
+                    <strong>All materials calculated same as below GL</strong>
+                </div>
+                <form id="masonryAboveForm" class="form-grid">
+                    <div class="form-group"><label>📏 Total Wall Length (m)</label><input type="number" id="maL" value="60" step="0.5" min="1" /></div>
+                    <div class="form-group"><label>📏 Wall Height (m)</label><input type="number" id="maH" value="3.0" step="0.1" min="1" /></div>
+                    <div class="form-group"><label>📏 Wall Thickness (m)</label><input type="number" id="maT" value="0.20" step="0.05" min="0.10" /></div>
+                    <div class="form-group"><label>🧱 Block Size</label><select id="maBlockType" class="form-control"><option value="20" selected>20cm HCM</option><option value="15">15cm HCM</option><option value="10">10cm HCM</option></select></div>
+                    <div class="form-group"><label>📐 Mortar Mix</label><select id="maMortar" class="form-control"><option value="4">1:4 (Strong)</option><option value="5">1:5 (Medium)</option><option value="6" selected>1:6 (Normal)</option></select></div>
+                    <div class="form-group full-width result-group">
+                        <label>📊 Masonry Above GL - Complete Materials</label>
+                        <output id="maResult" class="result-value" style="font-size:14px;">Click to calculate</output>
+                    </div>
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-primary"><i class="fas fa-calculator"></i> Calculate Masonry</button>
+                    </div>
+                </form>
+                <div id="maDetailsBox" style="margin-top:14px;"></div>
+            </div>
+        </section>
+
+        <!-- MODULE 10: LEAN CONCRETE -->
+        <section id="lean-concrete" class="page">
+            <div class="card"><span class="module-badge">STEP 10</span>
+                <h2><i class="fas fa-trowel"></i> Lean Concrete (Blinding)</h2>
+                <div class="formula-box">
+                    <strong>📐 Formula:</strong> <code>V = L × W × t</code><br>
+                    <strong>Thickness:</strong> 50mm (ETBCS minimum under footings)<br>
+                    <strong>Grade:</strong> C15 (1:3:6) lean concrete<br>
+                    <strong>Extension:</strong> 100mm each side beyond footing
+                </div>
+                <form id="leanForm" class="form-grid">
+                    <div class="form-group"><label>📏 Footing L (m)</label><input type="number" id="lcL" value="2.5" step="0.05" min="0.5" /></div>
+                    <div class="form-group"><label>📏 Footing W (m)</label><input type="number" id="lcW" value="2.5" step="0.05" min="0.5" /></div>
+                    <div class="form-group"><label>📏 Thickness (m)</label><input type="number" id="lcT" value="0.05" step="0.01" min="0.03" /></div>
+                    <div class="form-group"><label>📏 Extension each side (m)</label><input type="number" id="lcExt" value="0.1" step="0.05" min="0" /></div>
+                    <div class="form-group"><label>🔢 Number of Footings</label><input type="number" id="lcCount" value="18" step="1" min="1" /></div>
+                    <div class="form-group full-width result-group">
+                        <label>📊 Lean Concrete Volume</label>
+                        <output id="lcResult" class="result-value" style="font-size:14px;">Click to calculate</output>
+                    </div>
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-primary"><i class="fas fa-calculator"></i> Calculate</button>
+                    </div>
+                </form>
+                <div id="lcDetailsBox" style="margin-top:14px;"></div>
+            </div>
+        </section>
+
+        <!-- MODULE 11: CONCRETE MIX CALCULATOR -->
+        <section id="concrete-mix" class="page">
+            <div class="card"><span class="module-badge">STEP 11</span>
+                <h2><i class="fas fa-flask"></i> Concrete Mix Calculator - Cement, Sand, Aggregate</h2>
+                <div class="formula-box">
+                    <strong>📐 Dry Volume Factor = 1.54</strong> (accounts for voids)<br>
+                    <strong>Mix Ratios (Cement : Sand : Aggregate):</strong><br>
+                    • C15 (1:3:6) → 250 kg cement/m³, 0.55 m³ sand, 1.10 m³ agg<br>
+                    • C20 (1:2:4) → 320 kg cement/m³, 0.48 m³ sand, 0.96 m³ agg<br>
+                    • C25 (1:1.5:3) → 400 kg cement/m³, 0.45 m³ sand, 0.90 m³ agg<br>
+                    • C30 (1:1:2) → 450 kg cement/m³, 0.42 m³ sand, 0.84 m³ agg<br>
+                    <strong>Cement bag = 50 kg | 1 m³ sand ≈ 1600 kg | 1 m³ aggregate ≈ 1500 kg</strong>
+                </div>
+                <div class="form-group full-width" style="margin-bottom:14px;">
+                    <button id="calcConcreteMixBtn" class="btn-primary"><i class="fas fa-calculator"></i> Calculate from All Concrete Work</button>
+                </div>
+                <div id="concreteMixBox">
+                    <p class="text-muted">Complete Steps 5, 6, 7, 10 first, then click above.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 12: BAR SCHEDULE -->
+        <section id="bar-schedule" class="page">
+            <div class="card"><span class="module-badge">STEP 12</span>
+                <h2><i class="fas fa-th-list"></i> Bar Bending Schedule - All Bars</h2>
+                <div class="formula-box">
+                    <strong>📐 Bar Weight Formula:</strong> <code>W = (d²/162) × L × N</code> (kg)<br>
+                    <strong>Where:</strong> d = bar diameter (mm), L = length (m), N = number of bars<br>
+                    <strong>Bar Count:</strong> <code>N = ceil(A_s / (π·d²/4))</code><br>
+                    <strong>Common Bar Sizes:</strong> φ8=0.395 kg/m, φ10=0.617 kg/m, φ12=0.888 kg/m, φ16=1.579 kg/m, φ20=2.467 kg/m, φ25=3.854 kg/m
+                </div>
+                <div class="form-group full-width" style="margin-bottom:14px;">
+                    <button id="calcBarScheduleBtn" class="btn-primary"><i class="fas fa-calculator"></i> Generate Bar Schedule</button>
+                </div>
+                <div id="barScheduleBox">
+                    <p class="text-muted">Complete Steps 5, 6, 7 first, then click above.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 13: BOQ -->
+        <section id="boq" class="page">
+            <div class="card">
+                <h2><i class="fas fa-file-invoice"></i> Bill of Quantities - Complete Substructure</h2>
+                <div class="formula-box">
+                    <strong>📋 Complete BOQ in ETB & USD</strong> | Includes all materials, labor, and equipment
+                </div>
+                <div style="margin-bottom:14px;" class="no-print">
+                    <button id="updateBOQBtn" class="btn-primary"><i class="fas fa-sync"></i> Refresh BOQ</button>
+                    <button id="clearAllBtn" class="btn-danger"><i class="fas fa-trash"></i> Clear All Data</button>
+                </div>
+                <table class="mat-table" id="boqTable">
+                    <thead>
+                        <tr><th>#</th><th>Description</th><th>Unit</th><th>Qty</th><th>Rate ETB</th><th>Rate USD</th><th>Amount ETB</th><th>Amount USD</th></tr>
+                    </thead>
+                    <tbody id="boqBody">
+                        <tr><td colspan="8" class="text-center text-muted" style="padding:20px;">Complete steps 1-11 first.</td></tr>
+                    </tbody>
+                </table>
+                <div class="boq-summary-card">
+                    <div><strong>💰 Grand Total (ETB):</strong> <span class="total-amount etb" id="boqTotalETB">0.00</span></div>
+                    <div><strong>💰 Grand Total (USD):</strong> <span class="total-amount" id="boqTotalUSD">0.00</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MODULE 14: REPORT -->
+        <section id="report" class="page">
+            <div class="card">
+                <h2><i class="fas fa-print"></i> A4 Report - Complete G+5 Substructure</h2>
+                <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;" class="no-print">
+                    <button id="genReportBtn" class="btn-primary"><i class="fas fa-sync"></i> Generate Report</button>
+                    <button id="printReportBtn" class="btn-secondary"><i class="fas fa-print"></i> Print A4</button>
+                    <button id="pdfReportBtn" class="btn-purple"><i class="fas fa-file-pdf"></i> Export PDF</button>
+                </div>
+                <div id="reportContent" style="background:var(--bg);padding:16px;border-radius:8px;border:1px solid var(--border);min-height:300px;">
+                    <div id="reportDetails"><p class="text-muted">Click "Generate Report" to create the A4 document.</p></div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <div class="bottombar" id="bottombar">
+        <div class="nav-left">
+            <button id="navBack" class="nav-btn"><i class="fas fa-arrow-left"></i> <span>Back</span></button>
+            <button id="navClear" class="nav-btn"><i class="fas fa-eraser"></i> <span>Clear</span></button>
+        </div>
+        <div class="nav-center">
+            <button id="navPrev" class="nav-btn"><i class="fas fa-chevron-left"></i> <span>Prev</span></button>
+            <span class="page-indicator" id="pageIndicator">1 / 14</span>
+            <button id="navNext" class="nav-btn"><span>Next</span> <i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="nav-right">
+            <button id="navPrint" class="nav-btn"><i class="fas fa-print"></i> <span>Print</span></button>
+        </div>
+    </div>
+</main>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<script>
+// ============================================================
+// CONSTANTS
+// ============================================================
+const USD_RATE = 55.5; // 1 USD = 55.5 ETB (2024 avg)
+const CEMENT_BAG_KG = 50;
+const STEEL_DENSITY = 7850; // kg/m³
+const DRY_VOL_FACTOR = 1.54;
+const BLOCKS_PER_M3 = 62.5;
+
+// Concrete mix per m³ (practical values)
+const CONCRETE_MIX = {
+    'C15': { cement: 250, sand: 0.55, agg: 1.10, mix: '1:3:6' },
+    'C20': { cement: 320, sand: 0.48, agg: 0.96, mix: '1:2:4' },
+    'C25': { cement: 400, sand: 0.45, agg: 0.90, mix: '1:1.5:3' },
+    'C30': { cement: 450, sand: 0.42, agg: 0.84, mix: '1:1:2' }
+};
+
+// ============================================================
+// APP STATE
+// ============================================================
+const App = {
+    state: {
+        theme: 'light',
+        currentPage: 'dashboard',
+        currency: 'USD',
+        setup: {},
+        concreteVolumes: { C15: 0, C20: 0, C25: 0, C30: 0 },
+        barSchedule: [],
+        boqItems: [],
+        calculations: [],
+        totals: { area: 0, excavation: 0, steel: 0, concrete: 0, formwork: 0, cement: 0, sand: 0, agg: 0, cost: 0 }
+    },
+
+    pageOrder: [
+        'dashboard', 'site-setup', 'site-clearing', 'bulk-exc', 'pit-exc',
+        'footing', 'stub', 'tie-beam', 'masonry-below', 'masonry-above',
+        'lean-concrete', 'concrete-mix', 'bar-schedule', 'boq', 'report'
+    ],
+
+    pageTitles: {
+        'dashboard': '🏠 Dashboard',
+        'site-setup': '📐 Site Setup',
+        'site-clearing': '🧹 Site Clearing',
+        'bulk-exc': '⛰️ Bulk Excavation',
+        'pit-exc': '🚜 Pit Excavation',
+        'footing': '🏗️ Footing Design',
+        'stub': '⬆️ Column Stub',
+        'tie-beam': '🔗 Tie Beam',
+        'masonry-below': '🧱 Masonry Below GL',
+        'masonry-above': '🏠 Masonry Above GL',
+        'lean-concrete': '🧱 Lean Concrete',
+        'concrete-mix': '🧪 Concrete Mix',
+        'bar-schedule': '📊 Bar Schedule',
+        'boq': '📋 BOQ Summary',
+        'report': '📄 A4 Report'
+    },
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    init() {
+        this.loadState();
+        this.setupEventListeners();
+        this.setupTheme();
+        this.setupNavigation();
+        this.setupForms();
+        this.updateDashboard();
+        this.renderRecent();
+        this.updatePageIndicator();
+        console.log('🏗️ ETBCS G+5 Complete System Ready');
+    },
+
+    loadState() {
+        try {
+            const s = localStorage.getItem('etbcsG5Full');
+            if (s) this.state = { ...this.state, ...JSON.parse(s) };
+        } catch (e) {}
+    },
+
+    saveState() {
+        try {
+            localStorage.setItem('etbcsG5Full', JSON.stringify(this.state));
+        } catch (e) {}
+    },
+
+    // ============================================================
+    // EVENTS
+    // ============================================================
+    setupEventListeners() {
+        document.getElementById('themeToggle').addEventListener('click', () => this.toggleTheme());
+        document.getElementById('sidebarToggle').addEventListener('click', () => this.toggleSidebar());
+
+        document.getElementById('currencySelector').addEventListener('change', (e) => {
+            this.state.currency = e.target.value;
+            this.saveState();
+            this.updateBOQ();
+            this.updateDashboard();
+        });
+
+        document.getElementById('printBtn').addEventListener('click', () => window.print());
+        document.getElementById('navPrint').addEventListener('click', () => window.print());
+        document.getElementById('pdfBtn').addEventListener('click', () => { showNotification('Use Print → Save as PDF'); window.print(); });
+        document.getElementById('excelBtn').addEventListener('click', () => this.exportExcel());
+
+        document.getElementById('navBack').addEventListener('click', () => this.goToPrev());
+        document.getElementById('navPrev').addEventListener('click', () => this.goToPrev());
+        document.getElementById('navNext').addEventListener('click', () => this.goToNext());
+        document.getElementById('navClear').addEventListener('click', () => {
+            if (confirm('Clear all data?')) {
+                localStorage.removeItem('etbcsG5Full');
+                location.reload();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') this.closeSidebar();
+        });
+    },
+
+    // ============================================================
+    // THEME
+    // ============================================================
+    setupTheme() {
+        const s = localStorage.getItem('etbcsG5ThemeFull');
+        if (s) this.state.theme = s;
+        else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) this.state.theme = 'dark';
+        this.applyTheme();
+    },
+
+    toggleTheme() {
+        this.state.theme = this.state.theme === 'light' ? 'dark' : 'light';
+        this.applyTheme();
+        localStorage.setItem('etbcsG5ThemeFull', this.state.theme);
+    },
+
+    applyTheme() {
+        document.documentElement.setAttribute('data-theme', this.state.theme);
+        const icon = document.querySelector('#themeToggle i');
+        if (icon) icon.className = this.state.theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+    },
+
+    // ============================================================
+    // NAVIGATION
+    // ============================================================
+    setupNavigation() {
+        document.querySelectorAll('.sidebar-nav a[data-page]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.navigateTo(link.dataset.page);
+                this.closeSidebar();
+            });
+        });
+    },
+
+    navigateTo(pageId) {
+        if (!document.getElementById(pageId)) return;
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        this.state.currentPage = pageId;
+        document.querySelectorAll('.sidebar-nav li').forEach(li => li.classList.remove('active'));
+        const link = document.querySelector(`.sidebar-nav a[data-page="${pageId}"]`);
+        if (link) link.closest('li').classList.add('active');
+        document.getElementById('pageTitle').textContent = this.pageTitles[pageId] || pageId;
+        if (history.pushState) history.pushState(null, '', '#' + pageId);
+        if (pageId === 'dashboard') this.updateDashboard();
+        if (pageId === 'boq') this.updateBOQ();
+        this.updatePageIndicator();
+        document.getElementById('workspace').scrollTop = 0;
+    },
+
+    getCurrentIndex() { return this.pageOrder.indexOf(this.state.currentPage); },
+    goToPrev() { const i = this.getCurrentIndex(); if (i > 0) this.navigateTo(this.pageOrder[i - 1]); },
+    goToNext() { const i = this.getCurrentIndex(); if (i < this.pageOrder.length - 1) this.navigateTo(this.pageOrder[i + 1]); },
+    updatePageIndicator() {
+        const i = this.getCurrentIndex();
+        const t = this.pageOrder.length;
+        document.getElementById('pageIndicator').textContent = (i + 1) + ' / ' + t;
+        document.getElementById('navPrev').disabled = (i <= 0);
+        document.getElementById('navNext').disabled = (i >= t - 1);
+    },
+    toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); },
+    closeSidebar() { document.getElementById('sidebar').classList.remove('open'); },
+
+    // ============================================================
+    // FORMS
+    // ============================================================
+    setupForms() {
+        // 1. SETUP
+        document.getElementById('setupForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.state.setup = {
+                L: parseFloat(document.getElementById('setupL').value),
+                W: parseFloat(document.getElementById('setupW').value),
+                floors: parseInt(document.getElementById('setupFloors').value),
+                bayX: parseFloat(document.getElementById('setupBayX').value),
+                bayY: parseFloat(document.getElementById('setupBayY').value),
+                colSize: parseInt(document.getElementById('setupColSize').value),
+                concrete: 'C' + document.getElementById('setupConc').value,
+                steel: parseInt(document.getElementById('setupSteel').value),
+                soil: parseFloat(document.getElementById('setupSoil').value),
+                foundDepth: parseFloat(document.getElementById('setupFoundDepth').value),
+                liveLoad: parseFloat(document.getElementById('setupLive').value),
+                slabThick: parseInt(document.getElementById('setupSlabThick').value)
+            };
+            const s = this.state.setup;
+            const area = s.L * s.W;
+            const colsX = Math.ceil(s.L / s.bayX) + 1;
+            const colsY = Math.ceil(s.W / s.bayY) + 1;
+            const colCount = colsX * colsY;
+            this.state.totals.area = area;
+            document.getElementById('setupResult').textContent =
+                `Area = ${area.toFixed(2)} m² | Columns = ${colsX} × ${colsY} = ${colCount} | ${s.concrete}, S${s.steel}`;
+            
+            // Update downstream defaults
+            document.getElementById('clArea').value = area.toFixed(2);
+            document.getElementById('pitCols').value = colCount;
+            document.getElementById('stCols').value = colCount;
+            document.getElementById('lcCount').value = colCount;
+            document.getElementById('beBL').value = s.L;
+            document.getElementById('beBW').value = s.W;
+            
+            this.saveState();
+            this.updateDashboard();
+            this.addRecent('Setup', `Area ${area.toFixed(2)} m², ${colCount} cols`);
+            showNotification(`✅ Area: ${area.toFixed(2)} m² | Columns: ${colCount}`);
+        });
+
+        // 2. CLEARING
+        document.getElementById('clearingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const area = parseFloat(document.getElementById('clArea').value);
+            const depth = parseFloat(document.getElementById('clDepth').value);
+            const bulking = parseFloat(document.getElementById('clBulking').value);
+            const vol = area * depth * (1 + bulking / 100);
+            document.getElementById('clResult').textContent = vol.toFixed(2) + ' m³';
+            this.state.totals.excavation += vol;
+            this.addBOQ('Site Clearing & Topsoil Removal', 'm³', vol, 320);
+            this.addRecent('Site Clearing', vol.toFixed(2) + ' m³');
+            this.saveState();
+            this.updateDashboard();
+            showNotification(`✅ Site Clearing: ${vol.toFixed(2)} m³`);
+        });
+
+        // 3. BULK EXC
+        document.getElementById('bulkForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const bL = parseFloat(document.getElementById('beBL').value);
+            const bW = parseFloat(document.getElementById('beBW').value);
+            const depth = parseFloat(document.getElementById('beDepth').value);
+            const slope = parseFloat(document.getElementById('beSlope').value);
+            const bulking = parseFloat(document.getElementById('beBulking').value);
+            
+            let vol;
+            if (slope === 0) {
+                vol = bL * bW * depth;
+            } else {
+                const topL = bL + 2 * slope * depth;
+                const topW = bW + 2 * slope * depth;
+                const A1 = bL * bW;
+                const A2 = topL * topW;
+                vol = (depth / 3) * (A1 + A2 + Math.sqrt(A1 * A2));
+            }
+            const volLoose = vol * (1 + bulking / 100);
+            document.getElementById('beResult').textContent = volLoose.toFixed(2) + ' m³ (loose)';
+            this.state.totals.excavation += volLoose;
+            this.addBOQ('Bulk Excavation (loose)', 'm³', volLoose, 400);
+            this.addRecent('Bulk Excavation', volLoose.toFixed(2) + ' m³');
+            this.saveState();
+            this.updateDashboard();
+            showNotification(`✅ Bulk Excavation: ${volLoose.toFixed(2)} m³`);
+        });
+
+        // 4. PIT EXC
+        document.getElementById('pitForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const fL = parseFloat(document.getElementById('pitFL').value);
+            const fW = parseFloat(document.getElementById('pitFW').value);
+            const depth = parseFloat(document.getElementById('pitDepth').value);
+            const work = parseFloat(document.getElementById('pitWork').value);
+            const cols = parseInt(document.getElementById('pitCols').value);
+            
+            const pitL = fL + 2 * work;
+            const pitW = fW + 2 * work;
+            const volPerPit = pitL * pitW * depth;
+            const totalVol = volPerPit * cols;
+            
+            document.getElementById('pitResult').textContent =
+                `${totalVol.toFixed(2)} m³ (${cols} pits × ${volPerPit.toFixed(2)} m³)`;
+            this.state.totals.excavation += totalVol;
+            this.addBOQ(`Pit Excavation (${cols} pits)`, 'm³', totalVol, 450);
+            this.addRecent('Pit Excavation', totalVol.toFixed(2) + ' m³');
+            this.saveState();
+            this.updateDashboard();
+            showNotification(`✅ Pit Excavation: ${totalVol.toFixed(2)} m³`);
+        });
+
+        // 5. FOOTING
+        document.getElementById('footingForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.calcFooting();
+        });
+
+        // 6. STUB
+        document.getElementById('stubForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.calcStub();
+        });
+
+        // 7. TIE BEAM
+        document.getElementById('tieForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.calcTieBeam();
+        });
+
+        // 8. MASONRY BELOW
+        document.getElementById('masonryBelowForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.calcMasonry('below');
+        });
+
+        // 9. MASONRY ABOVE
+        document.getElementById('masonryAboveForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.calcMasonry('above');
+        });
+
+        // 10. LEAN CONCRETE
+        document.getElementById('leanForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.calcLean();
+        });
+
+        // 11. CONCRETE MIX
+        document.getElementById('calcConcreteMixBtn').addEventListener('click', () => this.calcConcreteMix());
+
+        // 12. BAR SCHEDULE
+        document.getElementById('calcBarScheduleBtn').addEventListener('click', () => this.calcBarSchedule());
+
+        // 13. BOQ
+        document.getElementById('updateBOQBtn').addEventListener('click', () => this.updateBOQ());
+        document.getElementById('clearAllBtn').addEventListener('click', () => {
+            if (confirm('Clear all data?')) {
+                localStorage.removeItem('etbcsG5Full');
+                location.reload();
+            }
+        });
+
+        // 14. REPORT
+        document.getElementById('genReportBtn').addEventListener('click', () => this.generateReport());
+        document.getElementById('printReportBtn').addEventListener('click', () => { this.generateReport(); setTimeout(() => window.print(), 300); });
+        document.getElementById('pdfReportBtn').addEventListener('click', () => { this.generateReport(); showNotification('Use Print → Save as PDF'); setTimeout(() => window.print(), 300); });
+    },
+
+    // ============================================================
+    // FOOTING DESIGN
+    // ============================================================
+    calcFooting() {
+        const N = parseFloat(document.getElementById('ftLoad').value);
+        const qAllow = parseFloat(document.getElementById('ftSoil').value);
+        const fck = parseFloat(document.getElementById('ftFck').value);
+        const fyk = parseFloat(document.getElementById('ftFyk').value);
+        const colSize = parseFloat(document.getElementById('ftColSize').value) / 1000; // mm to m
+        const barDia = parseFloat(document.getElementById('ftBarDia').value);
+        const cover = parseFloat(document.getElementById('ftCover').value) / 1000; // mm to m
+
+        // Step 1: Footing size (add 10% for moment)
+        const areaReq = (N / qAllow) * 1.10;
+        let B = Math.ceil(Math.sqrt(areaReq) * 10) / 10; // round up to 0.1m
+        B = Math.max(B, 1.5); // min 1.5m
+        const pressure = N / (B * B);
+
+        // Step 2: Punching shear iterate to find depth
+        const fcd = fck / 1.5;
+        const fyd = fyk / 1.15;
+        const fctm = 0.30 * Math.pow(fck, 2/3);
+        let d = 0.3; // initial 300mm
+        let iter = 0;
+        let vEd = 0, vRdc = 0;
+        while (iter < 25) {
+            const u = 4 * (colSize + Math.PI * d / 2) * 1000; // mm - critical perimeter
+            const punchArea = (colSize + d) * (colSize + d);
+            const VEd = N - pressure * punchArea;
+            vEd = (VEd * 1000) / (u * d * 1000); // MPa
+            const k = Math.min(2.0, 1 + Math.sqrt(200 / (d * 1000)));
+            const rho = 0.005;
+            vRdc = Math.max(
+                0.12 * k * Math.pow(100 * rho * fck, 1/3),
+                0.035 * Math.pow(k, 1.5) * Math.sqrt(fck)
+            );
+            if (vEd <= vRdc) break;
+            d += 0.025;
+            iter++;
+        }
+        const H = Math.ceil((d + cover + 0.02) * 20) / 20; // round to 50mm
+        const dEff = H - cover - barDia / 2000;
+
+        // Step 3: Bending steel
+        const proj = (B - colSize) / 2;
+        const Mu = pressure * 1.0 * proj * proj / 2; // kNm/m
+        const As = (Mu * 1e6) / (0.87 * fyk * 0.9 * dEff * 1000); // mm²/m
+        const AsMin = 0.0013 * 1000 * (H * 1000);
+        const AsDesign = Math.max(As, AsMin);
+
+        // Step 4: Bar spacing
+        const barArea = Math.PI * Math.pow(barDia, 2) / 4;
+        let spacing = Math.floor(barArea * 1000 / AsDesign / 10) * 10;
+        spacing = Math.min(Math.max(spacing, 100), 300);
+        const numBars = Math.ceil((B * 1000 - 2 * cover * 1000) / spacing) + 1;
+
+        // Step 5: Quantities
+        const colCount = parseInt(document.getElementById('stCols').value) || 18;
+        const concretePerFoot = B * B * H;
+        const concreteTotal = concretePerFoot * colCount;
+        const formworkPer = 4 * B * H;
+        const formworkTotal = formworkPer * colCount;
+        // Steel: 2 directions
+        const barLen = B - 2 * cover;
+        const steelPer = (Math.pow(barDia, 2) / 162) * barLen * numBars * 2;
+        const steelTotal = steelPer * colCount;
+
+        // Concrete grade
+        const concGrade = this.state.setup.concrete || 'C25';
+        this.state.concreteVolumes[concGrade] = (this.state.concreteVolumes[concGrade] || 0) + concreteTotal;
+
+        // Update totals
+        this.state.totals.concrete += concreteTotal;
+        this.state.totals.steel += steelTotal;
+        this.state.totals.formwork += formworkTotal;
+
+        // Store for later
+        this.state.footing = { B, H, dEff, pressure, AsDesign, spacing, barDia, numBars, concreteTotal, steelTotal, formworkTotal, colCount };
+
+        // Add bars to schedule
+        this.state.barSchedule.push({
+            element: 'Footing', mark: 'F1',
+            dia: barDia, numBars: numBars * 2 * colCount,
+            length: barLen, weight: steelTotal
+        });
+
+        // BOQ
+        this.addBOQ(`Footing Concrete ${concGrade}`, 'm³', concreteTotal, 4800);
+        this.addBOQ(`Footing Reinforcement S${this.state.setup.steel}`, 'kg', steelTotal, 85);
+        this.addBOQ('Footing Formwork', 'm²', formworkTotal, 550);
+        this.addBOQ('Footing Blinding (Lean)', 'm³', (B + 0.2) * (B + 0.2) * 0.05 * colCount, 2800);
+
+        // Lean concrete add
+        this.state.concreteVolumes['C15'] = (this.state.concreteVolumes['C15'] || 0) + (B + 0.2) * (B + 0.2) * 0.05 * colCount;
+
+        // Display
+        const pass = vEd <= vRdc && pressure <= qAllow;
+        document.getElementById('ftResult').textContent =
+            `${B.toFixed(2)}×${B.toFixed(2)}×${H.toFixed(2)}m | ${numBars}T${barDia}@${spacing}mm | ${pass ? '✅ PASS' : '⚠️ CHECK'}`;
+        
+        document.getElementById('ftDetailsBox').innerHTML = `
+            <div class="formula-box">
+                <strong>📐 Design Results (per footing × ${colCount}):</strong><br>
+                <strong>Size:</strong> ${B.toFixed(2)} × ${B.toFixed(2)} × ${H.toFixed(2)} m<br>
+                <strong>Bearing Pressure:</strong> ${pressure.toFixed(1)} kPa ${pressure <= qAllow ? '<span class="check-badge check-pass">✓ ≤ ' + qAllow + ' kPa</span>' : '<span class="check-badge check-fail">✗ > ' + qAllow + ' kPa</span>'}<br>
+                <strong>Punching Shear:</strong> vEd = ${vEd.toFixed(3)} MPa ${vEd <= vRdc ? '<span class="check-badge check-pass">✓ ≤ ' + vRdc.toFixed(3) + '</span>' : '<span class="check-badge check-fail">✗</span>'}<br>
+                <strong>Steel:</strong> ${numBars}T${barDia} @ ${spacing}mm c/c both ways (As = ${AsDesign.toFixed(0)} mm²/m, min ${AsMin.toFixed(0)})<br>
+                <strong>Total Concrete:</strong> ${concreteTotal.toFixed(2)} m³ | <strong>Steel:</strong> ${steelTotal.toFixed(2)} kg | <strong>Formwork:</strong> ${formworkTotal.toFixed(2)} m²
+            </div>`;
+
+        this.saveState();
+        this.updateDashboard();
+        this.addRecent('Footing', `${B}×${B}×${H}m`);
+        showNotification(`✅ Footing: ${B}×${B}×${H}m | ${numBars}T${barDia}@${spacing}mm`);
+    },
+
+    // ============================================================
+    // COLUMN STUB
+    // ============================================================
+    calcStub() {
+        const b = parseFloat(document.getElementById('stB').value);
+        const h = parseFloat(document.getElementById('stH').value);
+        const height = parseFloat(document.getElementById('stHeight').value);
+        const N = parseFloat(document.getElementById('stLoad').value);
+        const fck = parseFloat(document.getElementById('stFck').value);
+        const fyk = parseFloat(document.getElementById('stFyk').value);
+        const mainDia = parseFloat(document.getElementById('stMainDia').value);
+        const tieDia = parseFloat(document.getElementById('stTieDia').value);
+        const cover = parseFloat(document.getElementById('stCover').value);
+        const colCount = parseInt(document.getElementById('stCols').value);
+
+        const Ac = b * h;
+        const fcd = fck / 1.5;
+        const fyd = fyk / 1.15;
+
+        // Min & max steel
+        const AsMin = 0.01 * Ac;
+        const AsMax = 0.04 * Ac;
+
+        // Required steel
+        const NEd = N * 1000;
+        const AsReq = Math.max(AsMin, (NEd - 0.85 * fcd * Ac) / (fyd - 0.85 * fcd));
+        const AsDesign = Math.min(AsMax, AsReq);
+
+        // Bar selection
+        const mainArea = Math.PI * Math.pow(mainDia, 2) / 4;
+        let numBars = Math.max(4, Math.ceil(AsDesign / mainArea));
+        numBars = Math.ceil(numBars / 2) * 2; // even number
+        const AsProvided = mainArea * numBars;
+
+        // Capacity check
+        const NRd = (0.85 * fcd * (Ac - AsProvided) + fyd * AsProvided) / 1000;
+        const capacityPass = NRd >= N;
+
+        // Tie spacing
+        let tieSpacing = Math.min(12 * mainDia, 0.6 * b, 300);
+        tieSpacing = Math.floor(tieSpacing / 25) * 25;
+
+        // Quantities per column
+        const concPerCol = (b / 1000) * (h / 1000) * height;
+        const concTotal = concPerCol * colCount;
+        const formPerCol = 2 * (b + h) / 1000 * height;
+        const formTotal = formPerCol * colCount;
+
+        // Steel per column
+        const mainSteelPer = (Math.pow(mainDia, 2) / 162) * height * numBars;
+        const tieLen = 2 * (b + h) / 1000 - 8 * (cover / 1000) + 24 * tieDia / 1000;
+        const numTies = Math.ceil(height / (tieSpacing / 1000));
+        const tieSteelPer = (Math.pow(tieDia, 2) / 162) * tieLen * numTies;
+        const steelPerCol = mainSteelPer + tieSteelPer;
+        const steelTotal = steelPerCol * colCount;
+
+        const concGrade = this.state.setup.concrete || 'C25';
+        this.state.concreteVolumes[concGrade] = (this.state.concreteVolumes[concGrade] || 0) + concTotal;
+
+        this.state.totals.concrete += concTotal;
+        this.state.totals.steel += steelTotal;
+        this.state.totals.formwork += formTotal;
+
+        this.state.stub = { b, h, height, numBars, mainDia, tieDia, tieSpacing, NRd, AsProvided, concTotal, steelTotal, formTotal, colCount };
+
+        // Bar schedule
+        this.state.barSchedule.push({
+            element: 'Column Stub', mark: 'C1-Main',
+            dia: mainDia, numBars: numBars * colCount,
+            length: height, weight: mainSteelPer * colCount
+        });
+        this.state.barSchedule.push({
+            element: 'Column Stub', mark: 'C1-Ties',
+            dia: tieDia, numBars: numTies * colCount,
+            length: tieLen, weight: tieSteelPer * colCount
+        });
+
+        // BOQ
+        this.addBOQ(`Column Stub Concrete ${concGrade}`, 'm³', concTotal, 5000);
+        this.addBOQ(`Column Stub Reinforcement`, 'kg', steelTotal, 85);
+        this.addBOQ('Column Stub Formwork', 'm²', formTotal, 620);
+
+        document.getElementById('stResult').textContent =
+            `${numBars}T${mainDia} | Ties T${tieDia}@${tieSpacing} | ${capacityPass ? '✅ PASS' : '⚠️ CHECK'}`;
+        
+        document.getElementById('stDetailsBox').innerHTML = `
+            <div class="formula-box">
+                <strong>📐 Column Stub Results (per column × ${colCount}):</strong><br>
+                <strong>Section:</strong> ${b}×${h} mm | Height: ${height}m<br>
+                <strong>Main Steel:</strong> ${numBars}T${mainDia} (As = ${AsProvided.toFixed(0)} mm², min ${AsMin.toFixed(0)}, max ${AsMax.toFixed(0)})<br>
+                <strong>Ties:</strong> T${tieDia} @ ${tieSpacing}mm c/c<br>
+                <strong>Capacity:</strong> NRd = ${NRd.toFixed(0)} kN ${capacityPass ? '<span class="check-badge check-pass">✓ ≥ ' + N + ' kN</span>' : '<span class="check-badge check-fail">✗</span>'}<br>
+                <strong>Total Concrete:</strong> ${concTotal.toFixed(2)} m³ | <strong>Steel:</strong> ${steelTotal.toFixed(2)} kg
+            </div>`;
+
+        this.saveState();
+        this.updateDashboard();
+        this.addRecent('Column Stub', `${numBars}T${mainDia}`);
+        showNotification(`✅ Stub: ${numBars}T${mainDia}, Ties T${tieDia}@${tieSpacing}`);
+    },
+
+    // ============================================================
+    // TIE BEAM
+    // ============================================================
+    calcTieBeam() {
+        const b = parseFloat(document.getElementById('tbB').value);
+        const h = parseFloat(document.getElementById('tbH').value);
+        const span = parseFloat(document.getElementById('tbSpan').value);
+        const udl = parseFloat(document.getElementById('tbUDL').value);
+        const fck = parseFloat(document.getElementById('tbFck').value);
+        const fyk = parseFloat(document.getElementById('tbFyk').value);
+        const mainDia = parseFloat(document.getElementById('tbMainDia').value);
+        const stirDia = parseFloat(document.getElementById('tbStirDia').value);
+        const cover = parseFloat(document.getElementById('tbCover').value);
+        const count = parseInt(document.getElementById('tbCount').value);
+
+        const d = h - cover - stirDia - mainDia / 2; // effective depth in mm
+        const dM = d / 1000; // in m
+
+        // Design moment & shear
+        const Mu = udl * span * span / 8; // kNm
+        const Vu = udl * span / 2; // kN
+
+        // Steel design
+        const As = (Mu * 1e6) / (0.87 * fyk * 0.9 * d);
+        const fctm = 0.30 * Math.pow(fck, 2/3);
+        const AsMin = Math.max(0.26 * fctm / fyk, 0.0013) * b * d;
+        const AsDesign = Math.max(As, AsMin);
+
+        // Bar selection
+        const barArea = Math.PI * Math.pow(mainDia, 2) / 4;
+        const numBars = Math.max(2, Math.ceil(AsDesign / barArea));
+        const AsProvided = barArea * numBars;
+
+        // Stirrups
+        let stirSpacing = Math.min(0.75 * d, 300);
+        stirSpacing = Math.floor(stirSpacing / 25) * 25;
+
+        // Shear check
+        const k = Math.min(2.0, 1 + Math.sqrt(200 / d));
+        const rho = AsProvided / (b * d);
+        const vRdc = Math.max(0.12 * k * Math.pow(100 * rho * fck, 1/3), 0.035 * Math.pow(k, 1.5) * Math.sqrt(fck)) * b * d / 1000;
+        const shearPass = vRdc >= Vu;
+
+        // Quantities per beam
+        const concPer = (b / 1000) * (h / 1000) * span;
+        const concTotal = concPer * count;
+        const formPer = (2 * h / 1000 + b / 1000) * span; // 2 sides + bottom
+        const formTotal = formPer * count;
+
+        // Steel per beam
+        const mainSteelPer = (Math.pow(mainDia, 2) / 162) * span * numBars * 2; // top + bottom
+        const stirLen = 2 * (b + h) / 1000 - 8 * (cover / 1000) + 24 * stirDia / 1000;
+        const numStir = Math.ceil(span / (stirSpacing / 1000)) + 1;
+        const stirSteelPer = (Math.pow(stirDia, 2) / 162) * stirLen * numStir;
+        const steelPer = mainSteelPer + stirSteelPer;
+        const steelTotal = steelPer * count;
+
+        const concGrade = this.state.setup.concrete || 'C25';
+        this.state.concreteVolumes[concGrade] = (this.state.concreteVolumes[concGrade] || 0) + concTotal;
+
+        this.state.totals.concrete += concTotal;
+        this.state.totals.steel += steelTotal;
+        this.state.totals.formwork += formTotal;
+
+        this.state.tieBeam = { b, h, span, Mu, Vu, numBars, mainDia, stirDia, stirSpacing, AsProvided, concTotal, steelTotal, formTotal, count };
+
+        // Bar schedule
+        this.state.barSchedule.push({
+            element: 'Tie Beam', mark: 'TB-Main',
+            dia: mainDia, numBars: numBars * 2 * count,
+            length: span, weight: mainSteelPer * count
+        });
+        this.state.barSchedule.push({
+            element: 'Tie Beam', mark: 'TB-Stirrups',
+            dia: stirDia, numBars: numStir * count,
+            length: stirLen, weight: stirSteelPer * count
+        });
+
+        // BOQ
+        this.addBOQ(`Tie Beam Concrete ${concGrade}`, 'm³', concTotal, 4800);
+        this.addBOQ(`Tie Beam Reinforcement`, 'kg', steelTotal, 85);
+        this.addBOQ('Tie Beam Formwork', 'm²', formTotal, 580);
+
+        document.getElementById('tbResult').textContent =
+            `${numBars}T${mainDia} top+bottom | T${stirDia}@${stirSpacing} | ${shearPass ? '✅ PASS' : '⚠️ CHECK'}`;
+        
+        document.getElementById('tbDetailsBox').innerHTML = `
+            <div class="formula-box">
+                <strong>📐 Tie Beam Results (per beam × ${count}):</strong><br>
+                <strong>Section:</strong> ${b}×${h} mm × Span ${span}m<br>
+                <strong>Loading:</strong> wu = ${udl} kN/m | Mu = ${Mu.toFixed(1)} kNm | Vu = ${Vu.toFixed(1)} kN<br>
+                <strong>Main Steel:</strong> ${numBars}T${mainDia} top + ${numBars}T${mainDia} bottom (As = ${AsProvided.toFixed(0)} mm²)<br>
+                <strong>Stirrups:</strong> T${stirDia} @ ${stirSpacing}mm c/c<br>
+                <strong>Shear:</strong> vRdc = ${vRdc.toFixed(1)} kN ${shearPass ? '<span class="check-badge check-pass">✓ ≥ ' + Vu.toFixed(1) + '</span>' : '<span class="check-badge check-fail">✗</span>'}<br>
+                <strong>Total Concrete:</strong> ${concTotal.toFixed(2)} m³ | <strong>Steel:</strong> ${steelTotal.toFixed(2)} kg
+            </div>`;
+
+        this.saveState();
+        this.updateDashboard();
+        this.addRecent('Tie Beam', `${numBars}T${mainDia}`);
+        showNotification(`✅ Tie Beam: ${numBars}T${mainDia} | Stirrups T${stirDia}@${stirSpacing}`);
+    },
+
+    // ============================================================
+    // MASONRY
+    // ============================================================
+    calcMasonry(where) {
+        const prefix = where === 'below' ? 'mb' : 'ma';
+        const L = parseFloat(document.getElementById(prefix + 'L').value);
+        const H = parseFloat(document.getElementById(prefix + 'H').value);
+        const T = parseFloat(document.getElementById(prefix + 'T').value);
+        const mortarMix = parseInt(document.getElementById(prefix + 'Mortar').value);
+
+        // Volume of masonry
+        const vol = L * H * T;
+
+        // Blocks
+        const blocks = vol * BLOCKS_PER_M3;
+
+        // Mortar
+        const mortarVol = vol * 0.30; // 30% mortar for hollow blocks
+        // Cement/sand ratio
+        const totalParts = 1 + mortarMix;
+        const dryVol = mortarVol * 1.33;
+        const cementVol = dryVol / totalParts;
+        const sandVol = dryVol * mortarMix / totalParts;
+        const cementKg = cementVol * 1440; // density of cement
+        const cementBags = Math.ceil(cementKg / CEMENT_BAG_KG);
+
+        // Update concrete materials? No - masonry uses mortar, not concrete.
+        // But add to BOQ
+        this.addBOQ(`Masonry ${where} GL - Blocks (20cm HCM)`, 'nos', blocks, 35);
+        this.addBOQ(`Mortar ${where} GL (1:${mortarMix})`, 'm³', mortarVol, 3500);
+        this.addBOQ(`Cement for Mortar ${where}`, 'bags', cementBags, 800);
+        this.addBOQ(`Sand for Mortar ${where}`, 'm³', sandVol, 1200);
+
+        // Track cement/sand for dashboard
+        this.state.totals.cement = (this.state.totals.cement || 0) + cementBags;
+        this.state.totals.sand = (this.state.totals.sand || 0) + sandVol;
+
+        if (where === 'below') this.state.masonryBelow = { vol, blocks, mortarVol, cementBags, sandVol };
+        else this.state.masonryAbove = { vol, blocks, mortarVol, cementBags, sandVol };
+
+        document.getElementById(prefix + 'Result').textContent =
+            `${vol.toFixed(2)} m³ | ${Math.ceil(blocks)} blocks | ${cementBags} bags cement | ${sandVol.toFixed(2)} m³ sand`;
+        
+        document.getElementById(prefix + 'DetailsBox').innerHTML = `
+            <div class="formula-box">
+                <strong>📐 Masonry ${where === 'below' ? 'Below' : 'Above'} GL Results:</strong><br>
+                <strong>Dimensions:</strong> ${L}m × ${H}m × ${T}m<br>
+                <strong>Volume:</strong> ${vol.toFixed(2)} m³<br>
+                <strong>Blocks (20cm HCM):</strong> ${Math.ceil(blocks)} nos<br>
+                <strong>Mortar (1:${mortarMix}):</strong> ${mortarVol.toFixed(2)} m³<br>
+                <strong>Cement:</strong> ${cementKg.toFixed(0)} kg = ${cementBags} bags (50kg each)<br>
+                <strong>Sand:</strong> ${sandVol.toFixed(2)} m³
+            </div>`;
+
+        this.saveState();
+        this.addRecent('Masonry ' + where, `${vol.toFixed(2)} m³`);
+        this.updateDashboard();
+        showNotification(`✅ Masonry ${where}: ${vol.toFixed(2)} m³, ${cementBags} bags cement`);
+    },
+
+    // ============================================================
+    // LEAN CONCRETE
+    // ============================================================
+    calcLean() {
+        const L = parseFloat(document.getElementById('lcL').value);
+        const W = parseFloat(document.getElementById('lcW').value);
+        const T = parseFloat(document.getElementById('lcT').value);
+        const ext = parseFloat(document.getElementById('lcExt').value);
+        const count = parseInt(document.getElementById('lcCount').value);
+
+        const padL = L + 2 * ext;
+        const padW = W + 2 * ext;
+        const volPer = padL * padW * T;
+        const total = volPer * count;
+
+        // Already added in footing module partially - but user may want separate calc
+        // For safety, add separate calc if not already done
+        const mix = CONCRETE_MIX['C15'];
+        const cementKg = total * mix.cement;
+        const cementBags = Math.ceil(cementKg / CEMENT_BAG_KG);
+        const sandVol = total * mix.sand;
+        const aggVol = total * mix.agg;
+
+        // Add to concrete volumes (C15)
+        this.state.concreteVolumes['C15'] = (this.state.concreteVolumes['C15'] || 0) + total;
+        this.state.totals.concrete += total;
+        this.state.totals.cement = (this.state.totals.cement || 0) + cementBags;
+        this.state.totals.sand = (this.state.totals.sand || 0) + sandVol;
+        this.state.totals.agg = (this.state.totals.agg || 0) + aggVol;
+
+        this.addBOQ('Lean Concrete (C15)', 'm³', total, 2800);
+        this.addBOQ('Cement for Lean Concrete', 'bags', cementBags, 800);
+        this.addBOQ('Sand for Lean Concrete', 'm³', sandVol, 1200);
+        this.addBOQ('Aggregate for Lean Concrete', 'm³', aggVol, 1500);
+
+        document.getElementById('lcResult').textContent =
+            `${total.toFixed(2)} m³ | ${cementBags} bags cement | ${sandVol.toFixed(2)} m³ sand | ${aggVol.toFixed(2)} m³ aggregate`;
+        
+        document.getElementById('lcDetailsBox').innerHTML = `
+            <div class="formula-box">
+                <strong>📐 Lean Concrete Results (C15 1:3:6):</strong><br>
+                <strong>Per pad:</strong> ${padL.toFixed(2)} × ${padW.toFixed(2)} × ${T.toFixed(3)}m = ${volPer.toFixed(3)} m³<br>
+                <strong>Total (${count} pads):</strong> ${total.toFixed(3)} m³<br>
+                <strong>Cement:</strong> ${cementKg.toFixed(0)} kg = ${cementBags} bags<br>
+                <strong>Sand:</strong> ${sandVol.toFixed(2)} m³<br>
+                <strong>Aggregate:</strong> ${aggVol.toFixed(2)} m³
+            </div>`;
+
+        this.saveState();
+        this.addRecent('Lean Concrete', `${total.toFixed(2)} m³`);
+        this.updateDashboard();
+        showNotification(`✅ Lean Concrete: ${total.toFixed(2)} m³`);
+    },
+
+    // ============================================================
+    // CONCRETE MIX - Full material breakdown
+    // ============================================================
+    calcConcreteMix() {
+        const box = document.getElementById('concreteMixBox');
+        let html = '<h3 style="margin:14px 0 8px;font-size:14px;">🧪 Concrete Material Requirements (from all concrete work)</h3>';
+        
+        let totalCement = 0, totalSand = 0, totalAgg = 0;
+        let hasData = false;
+
+        html += `<table class="mat-table">
+            <thead>
+                <tr><th>Grade</th><th>Mix Ratio</th><th>Volume (m³)</th><th>Cement (kg)</th><th>Cement (bags)</th><th>Sand (m³)</th><th>Aggregate (m³)</th></tr>
+            </thead>
+            <tbody>`;
+
+        Object.entries(this.state.concreteVolumes).forEach(([grade, vol]) => {
+            if (vol > 0) {
+                hasData = true;
+                const mix = CONCRETE_MIX[grade] || CONCRETE_MIX['C25'];
+                const cement = vol * mix.cement;
+                const bags = Math.ceil(cement / CEMENT_BAG_KG);
+                const sand = vol * mix.sand;
+                const agg = vol * mix.agg;
+                totalCement += cement;
+                totalSand += sand;
+                totalAgg += agg;
+                html += `<tr>
+                    <td><strong>${grade}</strong></td>
+                    <td>${mix.mix}</td>
+                    <td>${vol.toFixed(2)}</td>
+                    <td>${cement.toFixed(0)}</td>
+                    <td><strong>${bags}</strong></td>
+                    <td>${sand.toFixed(2)}</td>
+                    <td>${agg.toFixed(2)}</td>
+                </tr>`;
+            }
+        });
+
+        if (!hasData) {
+            html += `<tr><td colspan="7" style="text-align:center;padding:20px;">No concrete calculated yet. Complete Steps 5, 6, 7, 10 first.</td></tr>`;
+        } else {
+            html += `<tr class="total-row">
+                <td colspan="3"><strong>TOTAL</strong></td>
+                <td><strong>${totalCement.toFixed(0)} kg</strong></td>
+                <td><strong>${Math.ceil(totalCement / CEMENT_BAG_KG)} bags</strong></td>
+                <td><strong>${totalSand.toFixed(2)} m³</strong></td>
+                <td><strong>${totalAgg.toFixed(2)} m³</strong></td>
+            </tr>`;
+        }
+        html += '</tbody></table>';
+
+        if (hasData) {
+            html += `
+                <div class="result-group" style="margin-top:14px;">
+                    <label>📦 Total Materials for ALL Concrete</label>
+                    <div style="font-size:14px;line-height:1.8;margin-top:6px;">
+                        <strong>Cement:</strong> ${Math.ceil(totalCement / CEMENT_BAG_KG)} bags (${totalCement.toFixed(0)} kg)<br>
+                        <strong>Sand:</strong> ${totalSand.toFixed(2)} m³<br>
+                        <strong>Aggregate:</strong> ${totalAgg.toFixed(2)} m³<br>
+                        <strong>Water (approx 0.5 w/c):</strong> ${(totalCement * 0.5 / 1000).toFixed(2)} m³
+                    </div>
+                </div>`;
+        }
+        box.innerHTML = html;
+        this.addRecent('Concrete Mix', `${Math.ceil(totalCement / CEMENT_BAG_KG)} bags cement`);
+    },
+
+    // ============================================================
+    // BAR SCHEDULE
+    // ============================================================
+    calcBarSchedule() {
+        const box = document.getElementById('barScheduleBox');
+        if (this.state.barSchedule.length === 0) {
+            box.innerHTML = '<p class="text-muted">No bars yet. Complete Steps 5, 6, 7 first.</p>';
+            return;
+        }
+
+        // Aggregate by diameter
+        const byDia = {};
+        this.state.barSchedule.forEach(item => {
+            if (!byDia[item.dia]) byDia[item.dia] = { totalBars: 0, totalKg: 0 };
+            byDia[item.dia].totalBars += item.numBars;
+            byDia[item.dia].totalKg += item.weight;
+        });
+
+        let html = '<h3 style="margin:14px 0 8px;font-size:14px;">📊 Bar Schedule - All Elements</h3>';
+        html += `<table class="mat-table">
+            <thead>
+                <tr><th>Mark</th><th>Element</th><th>Bar φ (mm)</th><th>Count</th><th>Length (m)</th><th>Weight (kg)</th></tr>
+            </thead>
+            <tbody>`;
+
+        let totalKg = 0;
+        this.state.barSchedule.forEach(item => {
+            totalKg += item.weight;
+            html += `<tr>
+                <td>${item.mark}</td>
+                <td>${item.element}</td>
+                <td>T${item.dia}</td>
+                <td>${item.numBars}</td>
+                <td>${item.length.toFixed(2)}</td>
+                <td>${item.weight.toFixed(2)}</td>
+            </tr>`;
+        });
+
+        html += `<tr class="total-row"><td colspan="5"><strong>TOTAL STEEL</strong></td><td><strong>${totalKg.toFixed(2)} kg</strong></td></tr>`;
+        html += '</tbody></table>';
+
+        html += '<h3 style="margin:14px 0 8px;font-size:14px;">📦 Steel by Diameter</h3>';
+        html += `<table class="mat-table">
+            <thead><tr><th>Diameter</th><th>Total Count</th><th>Total Weight (kg)</th><th>Total Weight (tons)</th></tr></thead><tbody>`;
+        Object.entries(byDia).sort((a,b) => a[0]-b[0]).forEach(([dia, data]) => {
+            html += `<tr>
+                <td><strong>T${dia}</strong></td>
+                <td>${data.totalBars}</td>
+                <td>${data.totalKg.toFixed(2)}</td>
+                <td>${(data.totalKg / 1000).toFixed(3)}</td>
+            </tr>`;
+        });
+        html += '</tbody></table>';
+
+        this.addBOQ('Total Reinforcement Steel', 'kg', totalKg, 85);
+        box.innerHTML = html;
+        this.state.totals.steel = totalKg;
+        this.saveState();
+        this.updateDashboard();
+        this.addRecent('Bar Schedule', `${totalKg.toFixed(0)} kg`);
+        showNotification(`✅ Bar Schedule: ${totalKg.toFixed(0)} kg total steel`);
+    },
+
+    // ============================================================
+    // BOQ MANAGEMENT
+    // ============================================================
+    addBOQ(desc, unit, qty, rateETB) {
+        if (qty <= 0) return;
+        this.state.boqItems.push({
+            desc, unit, qty,
+            rateETB,
+            rateUSD: rateETB / USD_RATE
+        });
+        this.saveState();
+    },
+
+    updateBOQ() {
+        const tbody = document.getElementById('boqBody');
+        if (!tbody) return;
+
+        // Aggregate
+        const map = {};
+        this.state.boqItems.forEach(item => {
+            const key = item.desc + '|' + item.unit;
+            if (map[key]) {
+                map[key].qty += item.qty;
+                map[key].rateETB = item.rateETB;
+            } else {
+                map[key] = { desc: item.desc, unit: item.unit, qty: item.qty, rateETB: item.rateETB, rateUSD: item.rateUSD };
+            }
+        });
+
+        const entries = Object.values(map);
+        if (entries.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--text-light);">No data. Complete Steps 1-11.</td></tr>';
+            document.getElementById('boqTotalETB').textContent = '0.00';
+            document.getElementById('boqTotalUSD').textContent = '0.00';
+            return;
+        }
+
+        let html = '', totalETB = 0, totalUSD = 0;
+        entries.forEach((item, idx) => {
+            const amtETB = item.qty * item.rateETB;
+            const amtUSD = item.qty * item.rateUSD;
+            totalETB += amtETB;
+            totalUSD += amtUSD;
+            html += `<tr>
+                <td>${idx + 1}</td>
+                <td><strong>${item.desc}</strong></td>
+                <td>${item.unit}</td>
+                <td>${item.qty.toFixed(2)}</td>
+                <td>${item.rateETB.toFixed(0)}</td>
+                <td>${item.rateUSD.toFixed(2)}</td>
+                <td>${amtETB.toFixed(0)}</td>
+                <td>${amtUSD.toFixed(2)}</td>
+            </tr>`;
+        });
+
+        tbody.innerHTML = html;
+        document.getElementById('boqTotalETB').textContent = totalETB.toFixed(0);
+        document.getElementById('boqTotalUSD').textContent = totalUSD.toFixed(2);
+        this.state.totals.cost = totalUSD;
+        this.updateDashboard();
+    },
+
+    updateDashboard() {
+        document.getElementById('dashArea').textContent = (this.state.totals.area || 0).toFixed(0);
+        document.getElementById('dashSteel').textContent = (this.state.totals.steel || 0).toFixed(0);
+        document.getElementById('dashConcrete').textContent = (this.state.totals.concrete || 0).toFixed(2);
+        document.getElementById('dashCement').textContent = Math.ceil(this.state.totals.cement || 0);
+        document.getElementById('dashExcavation').textContent = (this.state.totals.excavation || 0).toFixed(0);
+        
+        let cost = 0;
+        this.state.boqItems.forEach(item => {
+            cost += item.qty * (this.state.currency === 'ETB' ? item.rateETB : item.rateUSD);
+        });
+        this.state.totals.cost = cost;
+        document.getElementById('dashCost').textContent = cost.toFixed(0);
+    },
+
+    // ============================================================
+    // RECENT
+    // ============================================================
+    addRecent(name, value) {
+        this.state.calculations.unshift({ name, value, timestamp: new Date().toLocaleTimeString() });
+        if (this.state.calculations.length > 20) this.state.calculations.pop();
+        this.saveState();
+        this.renderRecent();
+    },
+
+    renderRecent() {
+        const c = document.getElementById('recentList');
+        if (!c) return;
+        if (this.state.calculations.length === 0) {
+            c.innerHTML = '<p class="text-muted">No calculations yet. Start with Step 1 →</p>';
+            return;
+        }
+        let html = '';
+        this.state.calculations.slice(0, 10).forEach(item => {
+            html += `<div class="recent-item"><span class="recent-name">${item.name}</span><span class="recent-value">${item.value} <small>${item.timestamp}</small></span></div>`;
+        });
+        c.innerHTML = html;
+    },
+
+    // ============================================================
+    // REPORT
+    // ============================================================
+    generateReport() {
+        const container = document.getElementById('reportDetails');
+        if (!container) return;
+
+        const map = {};
+        this.state.boqItems.forEach(item => {
+            const key = item.desc + '|' + item.unit;
+            if (map[key]) map[key].qty += item.qty;
+            else map[key] = { ...item };
+        });
+        const entries = Object.values(map);
+
+        if (entries.length === 0) {
+            container.innerHTML = '<p class="text-muted">No data. Complete calculations first.</p>';
+            return;
+        }
+
+        let totalETB = 0, totalUSD = 0, rows = '';
+        entries.forEach((item, idx) => {
+            const amtETB = item.qty * item.rateETB;
+            const amtUSD = item.qty * item.rateUSD;
+            totalETB += amtETB;
+            totalUSD += amtUSD;
+            rows += `<tr>
+                <td style="border:1px solid #ccc;padding:3px 5px;">${idx + 1}</td>
+                <td style="border:1px solid #ccc;padding:3px 5px;">${item.desc}</td>
+                <td style="border:1px solid #ccc;padding:3px 5px;">${item.unit}</td>
+                <td style="border:1px solid #ccc;padding:3px 5px;text-align:right;">${item.qty.toFixed(2)}</td>
+                <td style="border:1px solid #ccc;padding:3px 5px;text-align:right;">${item.rateETB.toFixed(0)}</td>
+                <td style="border:1px solid #ccc;padding:3px 5px;text-align:right;">${amtETB.toFixed(0)}</td>
+                <td style="border:1px solid #ccc;padding:3px 5px;text-align:right;">${amtUSD.toFixed(2)}</td>
+            </tr>`;
+        });
+
+        const s = this.state.setup;
+        const ft = this.state.footing || {};
+        const st = this.state.stub || {};
+        const tb = this.state.tieBeam || {};
+        const mb = this.state.masonryBelow || {};
+        const ma = this.state.masonryAbove || {};
+
+        const html = `
+            <div class="report-page-number" style="font-family:'Segoe UI',sans-serif;">
+                <div style="text-align:center;border-bottom:3px solid #0B5D7C;padding-bottom:8px;margin-bottom:10px;">
+                    <h2 style="color:#0B5D7C;margin:0;font-size:15px;">🏗️ ETHIOPIAN BUILDING CODE STANDARD (ETBCS)</h2>
+                    <h3 style="color:#F39C12;margin:3px 0;font-size:13px;">G+5 BUILDING - COMPLETE SUBSTRUCTURE BOQ</h3>
+                    <p style="color:#7F8C8D;font-size:9px;">Generated: ${new Date().toLocaleString()} | ES EN 1992-1-1:2015 | 1 USD = ${USD_RATE} ETB</p>
+                </div>
+
+                <table style="width:100%;font-size:9px;margin-bottom:8px;border-collapse:collapse;">
+                    <tr style="background:#0B5D7C;color:#fff;">
+                        <td style="padding:4px 6px;font-weight:bold;">Building:</td><td style="padding:4px 6px;">G+5</td>
+                        <td style="padding:4px 6px;font-weight:bold;">Dimensions:</td><td style="padding:4px 6px;">${s.L}m × ${s.W}m = ${(s.L*s.W).toFixed(0)} m²</td>
+                        <td style="padding:4px 6px;font-weight:bold;">Columns:</td><td style="padding:4px 6px;">${st.colCount || 'N/A'}</td>
+                    </tr>
+                    <tr style="background:#EBF2F8;">
+                        <td style="padding:4px 6px;font-weight:bold;">Concrete:</td><td style="padding:4px 6px;">${s.concrete}/30</td>
+                        <td style="padding:4px 6px;font-weight:bold;">Steel:</td><td style="padding:4px 6px;">S${s.steel}</td>
+                        <td style="padding:4px 6px;font-weight:bold;">Soil:</td><td style="padding:4px 6px;">${s.soil} kPa</td>
+                    </tr>
+                </table>
+
+                <div style="background:#FFF9E6;border-left:4px solid #F39C12;padding:6px 8px;font-size:9px;margin-bottom:8px;border-radius:4px;">
+                    <strong>📊 DESIGN SUMMARY:</strong><br>
+                    ${ft.B ? `Footing: <strong>${ft.B.toFixed(2)}×${ft.B.toFixed(2)}×${ft.H.toFixed(2)}m</strong> | T${ft.barDia}@${ft.spacing}mm | ${ft.numBars} bars/dir<br>` : ''}
+                    ${st.numBars ? `Column Stub: <strong>${st.numBars}T${st.mainDia} + T${st.tieDia}@${st.tieSpacing}mm</strong> | ${st.b}×${st.h}×${st.height}m<br>` : ''}
+                    ${tb.numBars ? `Tie Beam: <strong>${tb.numBars}T${tb.mainDia} top+bottom + T${tb.stirDia}@${tb.stirSpacing}mm</strong> | ${tb.b}×${tb.h}×${tb.span}m<br>` : ''}
+                    ${mb.blocks ? `Masonry Below GL: <strong>${Math.ceil(mb.blocks)} blocks, ${mb.cementBags} bags cement</strong><br>` : ''}
+                    ${ma.blocks ? `Masonry Above GL: <strong>${Math.ceil(ma.blocks)} blocks, ${ma.cementBags} bags cement</strong>` : ''}
+                </div>
+
+                <h4 style="color:#0B5D7C;font-size:11px;margin:6px 0;">📦 MATERIAL SUMMARY</h4>
+                <table style="width:100%;font-size:9px;border-collapse:collapse;margin-bottom:8px;">
+                    <tr style="background:#EBF2F8;">
+                        <td style="padding:4px 6px;"><strong>Concrete:</strong> ${this.state.totals.concrete.toFixed(2)} m³</td>
+                        <td style="padding:4px 6px;"><strong>Steel:</strong> ${this.state.totals.steel.toFixed(0)} kg</td>
+                        <td style="padding:4px 6px;"><strong>Cement:</strong> ${Math.ceil(this.state.totals.cement || 0)} bags</td>
+                    </tr>
+                    <tr style="background:#EBF2F8;">
+                        <td style="padding:4px 6px;"><strong>Sand:</strong> ${(this.state.totals.sand || 0).toFixed(2)} m³</td>
+                        <td style="padding:4px 6px;"><strong>Aggregate:</strong> ${(this.state.totals.agg || 0).toFixed(2)} m³</td>
+                        <td style="padding:4px 6px;"><strong>Formwork:</strong> ${(this.state.totals.formwork || 0).toFixed(2)} m²</td>
+                    </tr>
+                </table>
+
+                <h4 style="color:#0B5D7C;font-size:11px;margin:6px 0;">📋 BILL OF QUANTITIES</h4>
+                <table style="width:100%;border-collapse:collapse;font-size:8.5px;">
+                    <thead>
+                        <tr style="background:#0B5D7C;color:#fff;">
+                            <th style="border:1px solid #0B5D7C;padding:4px 5px;">#</th>
+                            <th style="border:1px solid #0B5D7C;padding:4px 5px;">Description</th>
+                            <th style="border:1px solid #0B5D7C;padding:4px 5px;">Unit</th>
+                            <th style="border:1px solid #0B5D7C;padding:4px 5px;">Qty</th>
+                            <th style="border:1px solid #0B5D7C;padding:4px 5px;">Rate ETB</th>
+                            <th style="border:1px solid #0B5D7C;padding:4px 5px;">Amount ETB</th>
+                            <th style="border:1px solid #0B5D7C;padding:4px 5px;">Amount USD</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                    <tfoot>
+                        <tr style="background:#F39C12;color:#fff;font-weight:bold;">
+                            <td colspan="5" style="border:1px solid #F39C12;padding:5px;text-align:right;">GRAND TOTAL</td>
+                            <td style="border:1px solid #F39C12;padding:5px;text-align:right;">${totalETB.toFixed(0)}</td>
+                            <td style="border:1px solid #F39C12;padding:5px;text-align:right;">${totalUSD.toFixed(2)}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <div style="margin-top:10px;font-size:8.5px;color:#7F8C8D;border-top:1px solid #BDC3C7;padding-top:6px;display:flex;justify-content:space-between;">
+                    <span>Prepared by: ______________</span>
+                    <span>Checked by: ______________</span>
+                    <span>Approved by: ______________</span>
+                </div>
+            </div>
+        `;
+        container.innerHTML = html;
+        showNotification('📄 Report generated');
+    },
+
+    exportExcel() {
+        const map = {};
+        this.state.boqItems.forEach(item => {
+            const key = item.desc + '|' + item.unit;
+            if (map[key]) map[key].qty += item.qty;
+            else map[key] = { ...item };
+        });
+        const entries = Object.values(map);
+
+        let csv = 'ETBCS G+5 Substructure BOQ\n';
+        csv += `Generated,${new Date().toLocaleString()}\n`;
+        csv += `Exchange Rate,1 USD = ${USD_RATE} ETB\n\n`;
+        csv += 'Item,Unit,Quantity,Rate(ETB),Rate(USD),Amount(ETB),Amount(USD)\n';
+
+        let totalETB = 0, totalUSD = 0;
+        entries.forEach(item => {
+            const amtETB = item.qty * item.rateETB;
+            const amtUSD = item.qty * item.rateUSD;
+            totalETB += amtETB;
+            totalUSD += amtUSD;
+            csv += `${item.desc},${item.unit},${item.qty.toFixed(2)},${item.rateETB.toFixed(0)},${item.rateUSD.toFixed(2)},${amtETB.toFixed(0)},${amtUSD.toFixed(2)}\n`;
+        });
+        csv += `\nGRAND TOTAL,,,,,${totalETB.toFixed(0)},${totalUSD.toFixed(2)}\n`;
+
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'ETBCS_G5_Substructure_BOQ.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+        showNotification('📊 Excel file downloaded');
+    }
+};
+
+// ============================================================
+// UTILITIES
+// ============================================================
+function showNotification(msg) {
+    const existing = document.querySelector('.notification-toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.className = 'notification-toast';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+        toast.style.animation = 'slideDown 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 2800);
+}
+
+function navigateTo(page) { App.navigateTo(page); }
+window.App = App;
+window.navigateTo = navigateTo;
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    App.init();
+    const hash = window.location.hash.replace('#', '');
+    if (hash) setTimeout(() => App.navigateTo(hash), 100);
+});
+
+window.addEventListener('hashchange', function() {
+    const hash = window.location.hash.replace('#', '');
+    if (hash) App.navigateTo(hash);
+});
+</script>
+
+</body>
+</html>
